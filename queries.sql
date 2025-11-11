@@ -16,6 +16,18 @@ CREATE TABLE jugadores (
     club VARCHAR(100)
 );
 
+
+CREATE TABLE technicalDirector(
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) NOT NULL UNIQUE,
+        nationality VARCHAR(100),
+        age INT,
+        currentTeam VARCHAR(100),
+        yearsExperience INT,
+        email VARCHAR(100),
+        cellphone VARCHAR(10)
+);
+
     INSERT INTO jugadores (nombre, apellido, edad, altura, pierna_buena, club) VALUES
     ('Damián', 'Díaz', 37, 1.67, 'Derecha', 'Barcelona SC'),
     ('Gabriel', 'Cortéz', 28, 1.78, 'Derecha', 'Barcelona SC'),
@@ -41,3 +53,12 @@ CREATE TABLE jugadores (
     ('Independiente del Valle', 'Sangolquí', 'Estadio Banco Guayaquil', 1958),
     ('Deportivo Quito', 'Quito', 'Estadio Olímpico Atahualpa', 1955),
     ('El Nacional', 'Quito', 'Estadio Olímpico Atahualpa', 1964);
+
+    INSERT INTO technicalDirector (name, nationality, age, currentTeam, yearsExperience, email, cellphone)
+    VALUES
+    ('Fabián Bustos', 'Argentina', 55, 'Barcelona SC', 20, 'fbustos@barcelonasc.com.ec', '0991122334'),
+    ('Hernán Torres', 'Colombia', 63, 'Emelec', 25, 'htorres@emelec.com.ec', '0987654321'),
+    ('Luis Zubeldía', 'Argentina', 44, 'Liga Deportiva Universitaria de Quito', 18, 'lzubeldia@lduquito.com.ec', '0995566778'),
+    ('Martín Anselmi', 'Argentina', 39, 'Independiente del Valle', 12, 'manselmi@idv.com.ec', '0977123456'),
+    ('Nelson Videla', 'Chile', 58, 'Deportivo Quito', 22, 'nvidela@deportivoquito.com.ec', '0963344556'),
+    ('Ever Hugo Almeida', 'Paraguay', 76, 'El Nacional', 35, 'ealmeida@elnacional.com.ec', '0999988776');
