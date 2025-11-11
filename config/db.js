@@ -4,10 +4,10 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const ConnectDB = new pg.Client({
-    user: process.env.DB_USER,
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD,
+    user: 'admin',
+    host: 'localhost',
+    database: 'soccerdb',
+    password: 'admin123',
     port: process.env.DB_PORT || 5432,
 })
 

@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllDirector,createDirector,updateDirector,deleteDirector } from '../controller/Director.controller';
+import { getAllDirector,createDirector,updateDirector,deleteDirector } from '../controller/Director.controller.js';
 
 const router = express.Router();
 
