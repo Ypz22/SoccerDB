@@ -1,6 +1,6 @@
 const ConnectDB = require('../config/db.js');
 
-// ✅ Get all players
+//Obtener todos los jugadores
 const getAllPlayers = async (req, res) => {
     try {
         const result = await ConnectDB.query('SELECT * FROM jugadores');
@@ -11,7 +11,7 @@ const getAllPlayers = async (req, res) => {
     }
 };
 
-// ✅ Create player
+//crear jugador
 const createPlayer = async (req, res) => {
     const { nombre, apellido, edad, altura, pierna_buena, club } = req.body;
     try {
@@ -28,7 +28,7 @@ const createPlayer = async (req, res) => {
     }
 };
 
-// ✅ Update player
+//actualizar jugador
 const updatePlayer = async (req, res) => {
     const { id } = req.params;
     const { nombre, apellido, edad, altura, pierna_buena, club } = req.body;
@@ -42,17 +42,17 @@ const updatePlayer = async (req, res) => {
         );
 
         if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'Player not found' });
+            return res.status(404).json({ error: 'Jugador no encontrado' });
         }
 
         res.status(200).json(result.rows[0]);
         console.log('Player updated successfully');
     } catch (error) {
-        res.status(500).json({ error: 'Failed to update player' });
+        res.status(500).json({ error: 'No se pudo actualizar los datos del jugador' });
     }
 };
 
-// ✅ Delete player
+//eliminar jugador
 const deletePlayer = async (req, res) => {
     const { id } = req.params;
 
@@ -63,13 +63,13 @@ const deletePlayer = async (req, res) => {
         );
 
         if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'Player not found' });
+            return res.status(404).json({ error: 'Jugador no encontrado' });
         }
 
-        res.status(200).json({ message: 'Player deleted successfully' });
-        console.log('Player deleted successfully');
+        res.status(200).json({ message: 'Jugador eliminado correctamente' });
+        console.log('Jugador eliminado correctamente');
     } catch (error) {
-        res.status(500).json({ error: 'Failed to delete player' });
+        res.status(500).json({ error: 'Error al eliminar el  jugador' });
     }
 };
 
