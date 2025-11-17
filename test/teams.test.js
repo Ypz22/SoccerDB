@@ -1,106 +1,108 @@
 const request = require('supertest');
 const app = require('../src/app');
-const ConnectDB = require('../src/config/db');
+const db = require('../src/config/db');
 
-jest.mock('../src/config/db');
+let createdId;
 
-describe('Teams API Endpoints', () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-    });
-
-    test('GET /api/teams - should return array of teams', async () => {
-        const mockTeams = [
-            { id: 1, name: "Barcelona", city: "Barcelona", stadium: "Camp Nou", year_foundation: 1899 },
-            { id: 2, name: "Real Madrid", city: "Madrid", stadium: "Santiago Bernabéu", year_foundation: 1902 },
-        ];
-
-        ConnectDB.query.mockResolvedValue({ rows: mockTeams });
-
-        const res = await request(app).get('/api/teams');
-
-        expect(res.statusCode).toBe(200);
-        expect(res.body).toEqual(mockTeams);
-    });
-
-    test('POST /api/teams - should create a new team', async () => {
-        const newTeam = {
-            name: "Liverpool",
-            city: "Liverpool",
-            stadium: "Anfield",
-            year_foundation: 1892
-        };
-
-        ConnectDB.query.mockResolvedValue({ rows: [{ id: 10, ...newTeam }] });
-
-        const res = await request(app).post('/api/teams').send(newTeam);
-
-        expect(res.statusCode).toBe(201);
-        expect(res.body.name).toBe("Liverpool");
-        expect(res.body).toHaveProperty("id");
-    });
-
-    test('POST /api/teams - incomplete fields should fail', async () => {
-        const res = await request(app)
-            .post('/api/teams')
-            .send({ name: "TEST" });
-
-        expect(res.statusCode).toBe(400);
-        expect(res.body).toHaveProperty("error", "Failed to add team");
-    });
-
-    test('PUT /api/teams/:id - should update a team', async () => {
-        const updatedTeam = {
-            id: 5,
-            name: "Chelsea",
-            city: "London",
-            stadium: "Stamford Bridge",
-            year_foundation: 1905
-        };
-
-        ConnectDB.query.mockResolvedValue({ rows: [updatedTeam] });
-
-        const res = await request(app)
-            .put('/api/teams/5')
-            .send(updatedTeam);
-
-        expect(res.statusCode).toBe(200);
-        expect(res.body.name).toBe("Chelsea");
-    });
-
-    test('PUT /api/teams/:id - should return 404 if team not found', async () => {
-        ConnectDB.query.mockResolvedValue({ rows: [] });
-
-        const res = await request(app)
-            .put('/api/teams/999')
-            .send({
-                name: "Fake Team",
-                city: "Fake City",
-                stadium: "Fake Stadium",
-                year_foundation: 2000
-            });
-
-        expect(res.statusCode).toBe(404);
-        expect(res.body).toHaveProperty("error", "Team not found");
-    });
-
-    test('DELETE /api/teams/:id - should delete a team', async () => {
-        ConnectDB.query.mockResolvedValue({
-            rows: [{ id: 1 }]
+beforeAll(async () => {
+    const res = await request(app)
+        .post('/api/teams')
+        .send({
+            name: "Barcelona Sporting Club",
+            city: "Guayaquil",
+            stadium: "Estadio Monumental",
+            year_foundation: 1925
         });
 
-        const res = await request(app).delete('/api/teams/1');
+    createdId = res.body.id;
+});
 
-        expect(res.statusCode).toBe(200);
-        expect(res.body).toHaveProperty("message", "Team deleted successfully");
-    });
+afterAll(async () => {
+    if (db.end) await db.end();
+});
 
-    test('DELETE /api/teams/:id - should return 404 if not found', async () => {
-        ConnectDB.query.mockResolvedValue({ rows: [] });
+test('GET /api/teams - debe devolver equipos ecuatorianos', async () => {
+    const response = await request(app).get('/api/teams');
 
-        const res = await request(app).delete('/api/teams/1000');
+    expect(response.statusCode).toBe(200);
+    expect(Array.isArray(response.body)).toBe(true);
+    expect(response.body.length).toBeGreaterThan(0);
 
-        expect(res.statusCode).toBe(404);
-        expect(res.body).toHaveProperty("error", "Team not found");
-    });
+    const ldu = response.body.find(t => t.name.includes("Liga"));
+    expect(ldu).toBeDefined();
+});
+
+test('GET /api/teams/:id - debe devolver equipo específico ecuatoriano', async () => {
+    const response = await request(app).get(`/api/teams/${createdId}`);
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveProperty('id', createdId);
+});
+
+test('POST /api/teams - debe crear un equipo ecuatoriano', async () => {
+    const newTeam = {
+        name: "Emelec",
+        city: "Guayaquil",
+        stadium: "Estadio Capwell",
+        year_foundation: 1929
+    };
+
+    const response = await request(app)
+        .post('/api/teams')
+        .send(newTeam);
+
+    expect(response.statusCode).toBe(201);
+    expect(response.body).toHaveProperty('id');
+    expect(response.body.name).toBe("Emelec");
+});
+
+test('POST /api/teams - error por datos incompletos', async () => {
+    const response = await request(app)
+        .post('/api/teams')
+        .send({ name: "" });
+
+    expect(response.statusCode).toBe(400);
+});
+
+test('PUT /api/teams/:id - debe actualizar equipo ecuatoriano', async () => {
+    const changes = {
+        name: "Barcelona SC Actualizado",
+        city: "Guayaquil",
+        stadium: "Estadio Monumental Banco Pichincha",
+        year_foundation: 1925
+    };
+
+    const response = await request(app)
+        .put(`/api/teams/${createdId}`)
+        .send(changes);
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body.name).toBe("Barcelona SC Actualizado");
+});
+
+test('PUT /api/teams/:id - error por id no existente', async () => {
+    const response = await request(app)
+        .put('/api/teams/999999')
+        .send({
+            name: "Equipo Falso",
+            city: "Ninguna",
+            stadium: "Ninguno",
+            year_foundation: 2000
+        });
+
+    expect(response.statusCode).toBe(404);
+});
+
+test('DELETE /api/teams/:id - debe borrar un equipo ecuatoriano', async () => {
+    const response = await request(app)
+        .delete(`/api/teams/${createdId}`);
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveProperty('message');
+});
+
+test('DELETE /api/teams/:id - error al eliminar inexistente', async () => {
+    const response = await request(app).delete('/api/teams/999999');
+
+    expect(response.statusCode).toBe(404);
 });

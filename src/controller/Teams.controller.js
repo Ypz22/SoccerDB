@@ -10,6 +10,25 @@ const getAllTeams = async (req, res) => {
     }
 };
 
+const getTeamById = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const result = await ConnectDB.query(
+            `SELECT * FROM teams WHERE id = $1`,
+            [id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Team not found' });
+        }
+
+        res.status(200).json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: 'Error fetching team' });
+    }
+};
+
 const createTeam = async (req, res) => {
     const { name, city, stadium, year_foundation } = req.body;
     if (!name || !city || !stadium || !year_foundation) {
@@ -64,6 +83,7 @@ const deleteTeam = async (req, res) => {
 
 module.exports = {
     getAllTeams,
+    getTeamById,
     createTeam,
     updateTeam,
     deleteTeam,

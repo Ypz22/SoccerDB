@@ -1,6 +1,7 @@
 const express = require('express');
 const {
     getAllTeams,
+    getTeamById,
     createTeam,
     updateTeam,
     deleteTeam,
@@ -9,6 +10,7 @@ const {
 const router = express.Router();
 
 router.get('/', getAllTeams);
+router.get('/:id', getTeamById);
 router.post('/', createTeam);
 router.put('/:id', updateTeam);
 router.delete('/:id', deleteTeam);

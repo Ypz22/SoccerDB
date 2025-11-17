@@ -7,7 +7,7 @@ const ConnectDB = new pg.Client({
     user: 'admin',
     host: 'localhost',
     database: 'soccerdb',
-    password: 'admin123',
+    password: 'admin',
     port: process.env.DB_PORT || 5432,
 });
 
