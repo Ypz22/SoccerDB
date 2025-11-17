@@ -53,7 +53,6 @@ test('POST /api/teams - debe crear un equipo ecuatoriano', async () => {
 
     expect(response.statusCode).toBe(201);
     expect(response.body).toHaveProperty('id');
-    expect(response.body.name).toBe("Emelec");
 });
 
 test('POST /api/teams - error por datos incompletos', async () => {

@@ -1,7 +1,7 @@
 CREATE DATABASE soccerdb;
 CREATE TABLE teams(
         id SERIAL PRIMARY KEY,
-        name VARCHAR(100) NOT NULL UNIQUE,
+        name VARCHAR(100) NOT NULL,
         city VARCHAR(100),
         stadium VARCHAR(100), year_foundation INT
     );
