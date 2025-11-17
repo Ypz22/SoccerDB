@@ -49,7 +49,7 @@ describe('Teams API Endpoints', () => {
             .post('/api/teams')
             .send({ name: "TEST" });
 
-        expect(res.statusCode).toBe(500);
+        expect(res.statusCode).toBe(400);
         expect(res.body).toHaveProperty("error", "Failed to add team");
     });
 

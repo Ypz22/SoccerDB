@@ -12,6 +12,9 @@ const getAllTeams = async (req, res) => {
 
 const createTeam = async (req, res) => {
     const { name, city, stadium, year_foundation } = req.body;
+    if (!name || !city || !stadium || !year_foundation) {
+        return res.status(400).json({ error: 'Failed to add team' });
+    }
     try {
         const result = await ConnectDB.query(
             'INSERT INTO teams (name, city, stadium, year_foundation) VALUES ($1, $2, $3, $4) RETURNING *',
