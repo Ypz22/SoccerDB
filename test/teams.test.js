@@ -2,7 +2,6 @@ const request = require('supertest');
 const app = require('../src/app');
 const ConnectDB = require('../src/config/db');
 
-// IMPORTANT: Mocks
 jest.mock('../src/config/db');
 
 describe('Teams API Endpoints', () => {
@@ -10,7 +9,6 @@ describe('Teams API Endpoints', () => {
         jest.clearAllMocks();
     });
 
-    // ✅ GET all teams
     test('GET /api/teams - should return array of teams', async () => {
         const mockTeams = [
             { id: 1, name: "Barcelona", city: "Barcelona", stadium: "Camp Nou", year_foundation: 1899 },
@@ -25,7 +23,6 @@ describe('Teams API Endpoints', () => {
         expect(res.body).toEqual(mockTeams);
     });
 
-    // ✅ CREATE
     test('POST /api/teams - should create a new team', async () => {
         const newTeam = {
             name: "Liverpool",
@@ -43,7 +40,6 @@ describe('Teams API Endpoints', () => {
         expect(res.body).toHaveProperty("id");
     });
 
-    // ❌ CREATE BAD BODY
     test('POST /api/teams - incomplete fields should fail', async () => {
         const res = await request(app)
             .post('/api/teams')
@@ -53,7 +49,6 @@ describe('Teams API Endpoints', () => {
         expect(res.body).toHaveProperty("error", "Failed to add team");
     });
 
-    // ✅ UPDATE
     test('PUT /api/teams/:id - should update a team', async () => {
         const updatedTeam = {
             id: 5,
@@ -73,7 +68,6 @@ describe('Teams API Endpoints', () => {
         expect(res.body.name).toBe("Chelsea");
     });
 
-    // ❌ UPDATE NOT FOUND
     test('PUT /api/teams/:id - should return 404 if team not found', async () => {
         ConnectDB.query.mockResolvedValue({ rows: [] });
 
@@ -90,7 +84,6 @@ describe('Teams API Endpoints', () => {
         expect(res.body).toHaveProperty("error", "Team not found");
     });
 
-    // ✅ DELETE
     test('DELETE /api/teams/:id - should delete a team', async () => {
         ConnectDB.query.mockResolvedValue({
             rows: [{ id: 1 }]
@@ -102,7 +95,6 @@ describe('Teams API Endpoints', () => {
         expect(res.body).toHaveProperty("message", "Team deleted successfully");
     });
 
-    // ❌ DELETE NOT FOUND
     test('DELETE /api/teams/:id - should return 404 if not found', async () => {
         ConnectDB.query.mockResolvedValue({ rows: [] });
 
