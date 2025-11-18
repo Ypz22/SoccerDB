@@ -1,5 +1,5 @@
 const ConnectDB = require('../config/db.js');
-const logger = require('../utils/logger.js')
+const logger = require('../utils/logger.js');
 
 
 //Obtener todos los jugadores

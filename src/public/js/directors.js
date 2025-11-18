@@ -1,28 +1,19 @@
 /* eslint-env browser */
 /* global fetch, document, window, confirm */
 
-
 const API_URL = '/api/directors';
-
 
 async function loadDirectors() {
     try {
         const res = await fetch(API_URL);
-        if (!res.ok) {
-            throw new Error(`HTTP error! status: ${res.status}`);
-        }
+        if (!res.ok) { throw new Error(`HTTP error! status: ${res.status}`); }
         let directors = await res.json();
-
-        // Ordenar por ID (asumiendo que el ID es numérico)
         directors = directors.sort((a, b) => a.id - b.id);
 
-        const table = document.getElementById('directorsTable'); // Cambiado a directorsTable
+        const table = document.getElementById('directorsTable');
         table.innerHTML = '';
 
         directors.forEach(t => {
-            // Adaptar las propiedades a Director Técnico
-            // *** CAMBIO CLAVE: Usamos t.currentteam y t.yearsexperience (minúsculas)
-            // *** Si no funciona, pruebe con t.current_team y t.years_experience
             table.innerHTML += `
                 <tr>
                     <td>${t.id}</td>
@@ -42,15 +33,12 @@ async function loadDirectors() {
         });
 
     } catch (err) {
-        console.error('Error cargando directores técnicos:', err);
         const table = document.getElementById('directorsTable');
         table.innerHTML = '<tr><td colspan="9">Error al cargar datos o no hay conexión.</td></tr>';
+        throw new Error(`Error cargando directores técnicos: ${err.message}`);
     }
 }
 
-/* =========================================================
- * AGREGAR (POST) - (Esta sección usa camelCase, lo cual está bien para enviar)
- * ========================================================= */
 document.getElementById('directorForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -61,7 +49,7 @@ document.getElementById('directorForm').addEventListener('submit', async (e) => 
         currentTeam: document.getElementById('currentTeam').value,
         yearsExperience: parseInt(document.getElementById('yearsExperience').value),
         email: document.getElementById('email').value,
-        cellphone: document.getElementById('cellphone').value,
+        cellphone: document.getElementById('cellphone').value
     };
 
     try {
@@ -70,64 +58,34 @@ document.getElementById('directorForm').addEventListener('submit', async (e) => 
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newDirector)
         });
-
-        if (res.status === 201) {
-            logger.info('Director Técnico creado con éxito.');
-        } else if (res.status === 500) {
-            const errorData = await res.json();
-            logger.error('Error 500 al crear:', errorData.error);
-        } else {
-            logger.error('Error inesperado al crear Director Técnico. Status:', res.status);
-        }
-
+        if (!res.ok) { throw new Error(`Error creando director: ${res.status}`); }
     } catch (err) {
-        logger.error('Error de red al intentar crear Director Técnico:', err);
+        throw new Error(`Error al crear director técnico: ${err.message}`);
     }
 
-
     e.target.reset();
-    loadDirectors();
+    await loadDirectors();
 });
 
-/* =========================================================
- * ELIMINAR (DELETE)
- * ========================================================= */
 async function deleteDirector(id) {
-    // Usar un modal personalizado en lugar de window.confirm() en una aplicación final
     if (!confirm(`¿Eliminar Director Técnico con ID ${id}?`)) { return; }
 
     try {
-        const res = await fetch(`${API_URL}/${id}`, {
-            method: 'DELETE'
-        });
-
-        if (res.status === 200) {
-            logger.info('Director Técnico eliminado con éxito.');
-        } else if (res.status === 404) {
-            logger.info('Error 404: Director Técnico no encontrado.');
-        } else {
-            logger.error('Error inesperado al eliminar Director Técnico. Status:', res.status);
-        }
-
+        const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+        if (!res.ok) { throw new Error(`Error eliminando director: ${res.status}`); }
     } catch (err) {
-        logger.error('Error de red al intentar eliminar Director Técnico:', err);
+        throw new Error(`Error al eliminar director técnico: ${err.message}`);
     }
 
-    loadDirectors();
+    await loadDirectors();
 }
 
-/* =========================================================
- * ABRIR MODAL Y CARGAR DATOS
- * ========================================================= */
 async function openDirectorModal(id) {
     try {
         const res = await fetch(`${API_URL}/${id}`);
-        if (!res.ok) {
-            throw new Error('Director no encontrado.');
-        }
-        const t = await res.json(); // Director data
+        if (!res.ok) { throw new Error('Director no encontrado.'); }
+        const t = await res.json();
 
-        // *** CAMBIO CLAVE: Usamos t.currentteam y t.yearsexperience (minúsculas)
         document.getElementById('editId').value = t.id;
         document.getElementById('editName').value = t.name;
         document.getElementById('editNationality').value = t.nationality;
@@ -138,22 +96,15 @@ async function openDirectorModal(id) {
         document.getElementById('editCellphone').value = t.cellphone;
 
         document.getElementById('editModal').style.display = 'flex';
-
     } catch (err) {
-        logger.error('Error al abrir modal:', err);
+        throw new Error(`Error abriendo modal: ${err.message}`);
     }
 }
 
-/* =========================================================
- * CERRAR MODAL
- * ========================================================= */
 function closeDirectorModal() {
     document.getElementById('editModal').style.display = 'none';
 }
 
-/* =========================================================
- * GUARDAR CAMBIOS (PUT) - (Esta sección usa camelCase, lo cual está bien para enviar)
- * ========================================================= */
 document.getElementById('editDirectorForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -175,26 +126,15 @@ document.getElementById('editDirectorForm').addEventListener('submit', async (e)
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(edited)
         });
-
-        if (res.status === 200) {
-            logger.info('Director Técnico actualizado con éxito.');
-        } else if (res.status === 404) {
-            logger.info('Error 404: Director Técnico no encontrado para actualizar.');
-        } else {
-            logger.error('Error inesperado al actualizar Director Técnico. Status:', res.status);
-        }
-
+        if (!res.ok) { throw new Error(`Error actualizando director: ${res.status}`); }
     } catch (err) {
-        logger.error('Error de red al intentar actualizar Director Técnico:', err);
+        throw new Error(`Error al actualizar director técnico: ${err.message}`);
     }
 
     closeDirectorModal();
-    loadDirectors();
+    await loadDirectors();
 });
 
-/* =========================================================
- * CARGA INICIAL
- * ========================================================= */
 window.onload = loadDirectors;
 window.deletePlayer = deleteDirector;
 window.openModal = openDirectorModal;

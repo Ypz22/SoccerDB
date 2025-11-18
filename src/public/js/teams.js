@@ -1,11 +1,12 @@
 /* eslint-env browser */
 /* global fetch, document, window, confirm */
 
-
 /* CARGAR Y ORDENAR */
 async function loadTeams() {
   try {
     const res = await fetch('/api/teams');
+    if (!res.ok) { throw new Error(`Error al obtener equipos: ${res.statusText}`); }
+
     let teams = await res.json();
 
     // 🔥 Ordenar por ID
@@ -31,7 +32,7 @@ async function loadTeams() {
     });
 
   } catch (err) {
-    console.error('Error cargando equipos:', err);
+    throw new Error(`Error cargando equipos: ${err.message}`);
   }
 }
 
@@ -39,46 +40,62 @@ async function loadTeams() {
 document.getElementById('teamForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const newTeam = {
-    name: document.getElementById('name').value,
-    city: document.getElementById('city').value,
-    stadium: document.getElementById('stadium').value,
-    year_foundation: parseInt(document.getElementById('year').value)
-  };
+  try {
+    const newTeam = {
+      name: document.getElementById('name').value,
+      city: document.getElementById('city').value,
+      stadium: document.getElementById('stadium').value,
+      year_foundation: parseInt(document.getElementById('year').value)
+    };
 
-  await fetch('/api/teams', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(newTeam)
-  });
+    const res = await fetch('/api/teams', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newTeam)
+    });
 
-  e.target.reset();
-  loadTeams();
+    if (!res.ok) { throw new Error(`Error al agregar equipo: ${res.statusText}`); }
+
+    e.target.reset();
+    await loadTeams();
+
+  } catch (err) {
+    throw new Error(`Error al agregar equipo: ${err.message}`);
+  }
 });
 
 /* ELIMINAR */
 async function deleteTeam(id) {
   if (!confirm('¿Eliminar equipo?')) { return; }
 
-  await fetch(`/api/teams/${id}`, {
-    method: 'DELETE'
-  });
+  try {
+    const res = await fetch(`/api/teams/${id}`, { method: 'DELETE' });
+    if (!res.ok) { throw new Error(`Error al eliminar equipo: ${res.statusText}`); }
 
-  loadTeams();
+    await loadTeams();
+  } catch (err) {
+    throw new Error(`Error al eliminar equipo: ${err.message}`);
+  }
 }
 
 /* ABRIR MODAL */
 async function openTeamModal(id) {
-  const res = await fetch(`/api/teams/${id}`);
-  const t = await res.json();
+  try {
+    const res = await fetch(`/api/teams/${id}`);
+    if (!res.ok) { throw new Error(`Error al obtener equipo: ${res.statusText}`); }
 
-  document.getElementById('editId').value = t.id;
-  document.getElementById('editName').value = t.name;
-  document.getElementById('editCity').value = t.city;
-  document.getElementById('editStadium').value = t.stadium;
-  document.getElementById('editYear').value = t.year_foundation;
+    const t = await res.json();
 
-  document.getElementById('editModal').style.display = 'flex';
+    document.getElementById('editId').value = t.id;
+    document.getElementById('editName').value = t.name;
+    document.getElementById('editCity').value = t.city;
+    document.getElementById('editStadium').value = t.stadium;
+    document.getElementById('editYear').value = t.year_foundation;
+
+    document.getElementById('editModal').style.display = 'flex';
+  } catch (err) {
+    throw new Error(`Error abriendo modal: ${err.message}`);
+  }
 }
 
 /* CERRAR */
@@ -90,23 +107,30 @@ function closeTeamModal() {
 document.getElementById('editTeamForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const edited = {
-    name: document.getElementById('editName').value,
-    city: document.getElementById('editCity').value,
-    stadium: document.getElementById('editStadium').value,
-    year_foundation: parseInt(document.getElementById('editYear').value)
-  };
+  try {
+    const edited = {
+      name: document.getElementById('editName').value,
+      city: document.getElementById('editCity').value,
+      stadium: document.getElementById('editStadium').value,
+      year_foundation: parseInt(document.getElementById('editYear').value)
+    };
 
-  const id = document.getElementById('editId').value;
+    const id = document.getElementById('editId').value;
 
-  await fetch(`/api/teams/${id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(edited)
-  });
+    const res = await fetch(`/api/teams/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(edited)
+    });
 
-  closeTeamModal();
-  loadTeams();
+    if (!res.ok) { throw new Error(`Error al actualizar equipo: ${res.statusText}`); }
+
+    closeTeamModal();
+    await loadTeams();
+
+  } catch (err) {
+    throw new Error(`Error guardando cambios: ${err.message}`);
+  }
 });
 
 /* CARGA INICIAL */
