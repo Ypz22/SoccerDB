@@ -1,3 +1,4 @@
+/* global console */
 const pg = require('pg');
 const dotenv = require('dotenv');
 
@@ -7,8 +8,8 @@ const ConnectDB = new pg.Client({
     user: 'admin',
     host: 'localhost',
     database: 'soccerdb',
-    password: 'admin123',
-    port: process.env.DB_PORT || 5432,
+    password: 'admin',
+    port: 5432,
 });
 
 const connectDB = async () => {
