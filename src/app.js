@@ -11,6 +11,8 @@ ConnectDB.connect();
 const app = express();
 app.use(express.json());
 
+app.use(express.static('src/public'));
+
 app.use('/api/teams', teamsRoutes);
 app.use('/api/players', playerRoutes);
 app.use('/api/directors', directorRoutes);

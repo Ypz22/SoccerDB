@@ -1,10 +1,10 @@
 const express = require('express');
 const {
-    getAllTeams,
-    getTeamById,
-    createTeam,
-    updateTeam,
-    deleteTeam,
+  getAllTeams,
+  getTeamById,
+  createTeam,
+  updateTeam,
+  deleteTeam,
 } = require('../controller/Teams.controller.js');
 
 const router = express.Router();

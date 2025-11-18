@@ -1,0 +1,13 @@
+.teams-title {
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: 20px;
+}
+
+.team-card {
+    background: white;
+    border-left: 6px solid var(--primary);
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}

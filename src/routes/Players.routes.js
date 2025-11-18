@@ -1,10 +1,10 @@
 const express = require('express');
 const {
-    getAllPlayers,
-    getPlayerById,
-    createPlayer,
-    updatePlayer,
-    deletePlayer
+  getAllPlayers,
+  getPlayerById,
+  createPlayer,
+  updatePlayer,
+  deletePlayer
 } = require('../controller/Players.controller.js');
 
 const router = express.Router();

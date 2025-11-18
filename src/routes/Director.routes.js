@@ -1,9 +1,9 @@
 const express = require('express');
 const {
-    getAllDirector,
-    createDirector,
-    updateDirector,
-    deleteDirector
+  getAllDirector,
+  createDirector,
+  updateDirector,
+  deleteDirector
 } = require('../controller/Director.controller.js');
 
 const router = express.Router();

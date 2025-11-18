@@ -1,0 +1,61 @@
+/* HERO ocupa toda la pantalla RESTANDO el NAV y FOOTER */
+.hero {
+    min-height: calc(100vh - 70px - 60px);
+    width: 100%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 60px 80px;
+
+    background: linear-gradient(
+        135deg,
+        var(--green-light) 0%,
+        var(--green-mid) 40%,
+        var(--green-dark) 100%
+    );
+    color: var(--white);
+}
+
+.hero-left {
+    max-width: 500px;
+}
+
+.big-title {
+    font-size: 4.5rem;
+    line-height: 1;
+    color: var(--white);
+}
+
+.big-title span {
+    color: var(--yellow);
+}
+
+.subtitle {
+    margin-top: 20px;
+    max-width: 420px;
+}
+
+.cta {
+    margin-top: 30px;
+    padding: 14px 32px;
+
+    background: var(--yellow);
+    color: var(--black);
+    border: none;
+    border-radius: 5px;
+
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.cta:hover {
+    background: var(--green-light);
+}
+
+/* Imagen del jugador */
+.hero-right img {
+    width: 420px;
+    filter: drop-shadow(0 0 30px var(--green-light));
+}
