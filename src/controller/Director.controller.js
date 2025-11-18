@@ -1,7 +1,4 @@
-const winston = require('winston');
-const logger = winston.createLogger({
-    transports: [new winston.transports.Console()]
-});
+const logger = require('../utils/logger.js')
 const ConnectDB = require('../config/db.js');
 
 const getAllDirector = async (req, res) => {

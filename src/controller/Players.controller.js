@@ -1,8 +1,6 @@
 const ConnectDB = require('../config/db.js');
-const winston = require('winston');
-const logger = winston.createLogger({
-    transports: [new winston.transports.Console()]
-});
+const logger = require('../utils/logger.js')
+
 
 //Obtener todos los jugadores
 const getAllPlayers = async (req, res) => {

@@ -1,6 +1,12 @@
+jest.mock('../src/utils/logger', () => ({
+    error: jest.fn(),
+    info: jest.fn()
+}));
+
 const request = require('supertest');
 const app = require('../src/app');
 const db = require('../src/config/db');
+const logger = require('../src/utils/logger');
 
 let createdId;
 
@@ -37,6 +43,30 @@ test('GET /api/teams/:id - debe devolver equipo específico ecuatoriano', async 
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty('id', createdId);
+});
+
+test('GET /api/teams/:id - debe responder 404 si el equipo no existe', async () => {
+    const response = await request(app).get('/api/teams/99999999');
+
+    expect(response.statusCode).toBe(404);
+    expect(response.body).toEqual({ error: 'Team not found' });
+});
+
+
+test('GET /api/teams/:id - debe responder 500 si ocurre un error en la BD', async () => {
+    // Forzamos error en la consulta
+    jest.spyOn(db, 'query').mockRejectedValueOnce(new Error('DB failure'));
+
+    const response = await request(app).get('/api/teams/1');
+
+    expect(response.statusCode).toBe(500);
+    expect(response.body).toEqual({ error: 'Error fetching team' });
+
+    // logger.error debe ser llamado
+    expect(logger.error).toHaveBeenCalled();
+
+    // Restaurar función original
+    db.query.mockRestore();
 });
 
 test('POST /api/teams - debe crear un equipo ecuatoriano', async () => {
