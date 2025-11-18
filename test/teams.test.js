@@ -45,6 +45,21 @@ test('GET /api/teams/:id - debe devolver equipo específico ecuatoriano', async 
     expect(response.body).toHaveProperty('id', createdId);
 });
 
+test('GET /api/teams - debe responder 500 si ocurre un error en la BD', async () => {
+    jest.spyOn(db, 'query').mockRejectedValueOnce(new Error('DB failure'));
+
+    const response = await request(app).get('/api/teams');
+
+    expect(response.statusCode).toBe(500);
+    expect(response.body).toEqual({ error: 'Failed to fetch teams' });
+
+    expect(logger.error).toHaveBeenCalled();
+    expect(logger.error.mock.calls[0][0]).toBe('Failed to fetch teams:');
+
+    db.query.mockRestore();
+});
+
+
 test('GET /api/teams/:id - debe responder 404 si el equipo no existe', async () => {
     const response = await request(app).get('/api/teams/99999999');
 
@@ -54,18 +69,13 @@ test('GET /api/teams/:id - debe responder 404 si el equipo no existe', async () 
 
 
 test('GET /api/teams/:id - debe responder 500 si ocurre un error en la BD', async () => {
-    // Forzamos error en la consulta
     jest.spyOn(db, 'query').mockRejectedValueOnce(new Error('DB failure'));
 
     const response = await request(app).get('/api/teams/1');
 
     expect(response.statusCode).toBe(500);
     expect(response.body).toEqual({ error: 'Error fetching team' });
-
-    // logger.error debe ser llamado
     expect(logger.error).toHaveBeenCalled();
-
-    // Restaurar función original
     db.query.mockRestore();
 });
 
@@ -84,6 +94,30 @@ test('POST /api/teams - debe crear un equipo ecuatoriano', async () => {
     expect(response.statusCode).toBe(201);
     expect(response.body).toHaveProperty('id');
 });
+
+test('POST /api/teams - debe responder 500 si ocurre un error en la BD', async () => {
+    const newTeam = {
+        name: "Deportivo Quito",
+        city: "Quito",
+        stadium: "Estadio Olímpico",
+        year_foundation: 1940
+    };
+
+    jest.spyOn(db, 'query').mockRejectedValueOnce(new Error('DB failure'));
+
+    const response = await request(app)
+        .post('/api/teams')
+        .send(newTeam);
+
+    expect(response.statusCode).toBe(500);
+    expect(response.body).toEqual({ error: 'Failed to add team' });
+
+    expect(logger.error).toHaveBeenCalled();
+    expect(logger.error.mock.calls[0][0]).toBe('Failed to fetch teams:');
+
+    db.query.mockRestore();
+});
+
 
 test('POST /api/teams - error por datos incompletos', async () => {
     const response = await request(app)
@@ -109,6 +143,30 @@ test('PUT /api/teams/:id - debe actualizar equipo ecuatoriano', async () => {
     expect(response.body.name).toBe("Barcelona SC Actualizado");
 });
 
+test('PUT /api/teams/:id - debe responder 500 si ocurre un error en la BD', async () => {
+    const changes = {
+        name: "Barcelona SC Actualizado",
+        city: "Guayaquil",
+        stadium: "Estadio Monumental",
+        year_foundation: 1925
+    };
+
+    jest.spyOn(db, 'query').mockRejectedValueOnce(new Error('DB failure'));
+
+    const response = await request(app)
+        .put('/api/teams/1')
+        .send(changes);
+
+    expect(response.statusCode).toBe(500);
+    expect(response.body).toEqual({ error: 'Failed to update team' });
+
+    expect(logger.error).toHaveBeenCalled();
+    expect(logger.error.mock.calls[0][0]).toBe('Failed to fetch teams:');
+
+    db.query.mockRestore();
+});
+
+
 test('PUT /api/teams/:id - error por id no existente', async () => {
     const response = await request(app)
         .put('/api/teams/999999')
@@ -129,6 +187,22 @@ test('DELETE /api/teams/:id - debe borrar un equipo ecuatoriano', async () => {
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty('message');
 });
+
+test('DELETE /api/teams/:id - debe responder 500 si ocurre un error en la BD', async () => {
+    jest.spyOn(db, 'query').mockRejectedValueOnce(new Error('DB failure'));
+
+    const response = await request(app)
+        .delete('/api/teams/1');
+
+    expect(response.statusCode).toBe(500);
+    expect(response.body).toEqual({ error: 'Failed to delete team' });
+
+    expect(logger.error).toHaveBeenCalled();
+    expect(logger.error.mock.calls[0][0]).toBe('Failed to fetch teams:');
+
+    db.query.mockRestore();
+});
+
 
 test('DELETE /api/teams/:id - error al eliminar inexistente', async () => {
     const response = await request(app).delete('/api/teams/999999');
