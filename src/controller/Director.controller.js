@@ -1,12 +1,16 @@
-/* global console */
+const winston = require('winston');
+const logger = winston.createLogger({
+    transports: [new winston.transports.Console()]
+});
 const ConnectDB = require('../config/db.js');
 
 const getAllDirector = async (req, res) => {
     try {
         const result = await ConnectDB.query('SELECT * FROM technicalDirector');
         res.status(200).json(result.rows);
-        console.log('Technical Directors fetched successfully');
+        logger.info('Technical Directors fetched successfully');
     } catch (error) {
+        logger.error('Failed to fetch directors:', error);
         res.status(500).json({ error: 'Failed to fetch directors' });
     }
 };
@@ -27,6 +31,7 @@ const getDirectorById = async (req, res) => {
 
         res.status(200).json(result.rows[0]);
     } catch (error) {
+        logger.error('Error al obtener director:', error);
         res.status(500).json({ error: 'Error al obtener director' });
     }
 };
@@ -45,8 +50,9 @@ const createDirector = async (req, res) => {
             [name, nationality, age, currentTeam, yearsExperience, email, cellphone]
         );
         res.status(201).json(result.rows[0]);
-        console.log('Technical Director added successfully');
+        logger.info('Technical Director added successfully');
     } catch (error) {
+        logger.error('Failed to add Technical Director:', error);
         res.status(500).json({ error: 'Failed to add Technical Director' });
     }
 };
@@ -66,8 +72,9 @@ const updateDirector = async (req, res) => {
             return res.status(404).json({ error: 'Technical Director not found' });
         }
         res.status(200).json(result.rows[0]);
-        console.log('Technical Director updated successfully');
+        logger.info('Technical Director updated successfully');
     } catch (error) {
+        logger.error('Failed to update Technical Director:', error);
         res.status(500).json({ error: 'Failed to update Technical Director' });
     }
 };
@@ -83,8 +90,9 @@ const deleteDirector = async (req, res) => {
             return res.status(404).json({ error: 'Technical Director not found' });
         }
         res.status(200).json({ message: 'Technical Director deleted successfully' });
-        console.log('Technical Director deleted successfully');
+        logger.info('Technical Director deleted successfully');
     } catch (error) {
+        logger.error('Failed to delete Technical Director:', error);
         res.status(500).json({ error: 'Failed to delete Technical Director' });
     }
 };
