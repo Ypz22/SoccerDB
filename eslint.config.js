@@ -11,7 +11,6 @@ module.exports = [
             ...js.configs.recommended.rules,
             semi: ['error', 'always'],
             quotes: ['error', 'single'],
-            indent: ['error', 2],
             'no-unused-vars': ['warn'],
             'no-console': ['warn'],
             'eqeqeq': ['error', 'always'],
