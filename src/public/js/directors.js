@@ -1,5 +1,11 @@
+/* eslint-env browser */
+/* global fetch, document, window, confirm */
+const winston = require('winston');
+const logger = winston.createLogger({
+    transports: [new winston.transports.Console()]
+});
 
-const API_URL = '/api/directors'; 
+const API_URL = '/api/directors';
 
 
 async function loadDirectors() {
@@ -39,6 +45,7 @@ async function loadDirectors() {
         });
 
     } catch (err) {
+        logger.error('Error cargando directores técnicos:', err);
         const table = document.getElementById('directorsTable');
         table.innerHTML = '<tr><td colspan="9">Error al cargar datos o no hay conexión.</td></tr>';
     }
@@ -68,16 +75,16 @@ document.getElementById('directorForm').addEventListener('submit', async (e) => 
         });
 
         if (res.status === 201) {
-            console.log('Director Técnico creado con éxito.');
+            logger.info('Director Técnico creado con éxito.');
         } else if (res.status === 500) {
             const errorData = await res.json();
-            console.error('Error 500 al crear:', errorData.error);
+            logger.error('Error 500 al crear:', errorData.error);
         } else {
-            console.error('Error inesperado al crear Director Técnico. Status:', res.status);
+            logger.error('Error inesperado al crear Director Técnico. Status:', res.status);
         }
 
     } catch (err) {
-        console.error('Error de red al intentar crear Director Técnico:', err);
+        logger.error('Error de red al intentar crear Director Técnico:', err);
     }
 
 
@@ -98,15 +105,15 @@ async function deleteDirector(id) {
         });
 
         if (res.status === 200) {
-            console.log('Director Técnico eliminado con éxito.');
+            logger.info('Director Técnico eliminado con éxito.');
         } else if (res.status === 404) {
-             console.log('Error 404: Director Técnico no encontrado.');
+            logger.info('Error 404: Director Técnico no encontrado.');
         } else {
-            console.error('Error inesperado al eliminar Director Técnico. Status:', res.status);
+            logger.error('Error inesperado al eliminar Director Técnico. Status:', res.status);
         }
 
     } catch (err) {
-        console.error('Error de red al intentar eliminar Director Técnico:', err);
+        logger.error('Error de red al intentar eliminar Director Técnico:', err);
     }
 
     loadDirectors();
@@ -136,7 +143,7 @@ async function openDirectorModal(id) {
         document.getElementById('editModal').style.display = 'flex';
 
     } catch (err) {
-        console.error('Error al abrir modal:', err);
+        logger.error('Error al abrir modal:', err);
     }
 }
 
@@ -173,15 +180,15 @@ document.getElementById('editDirectorForm').addEventListener('submit', async (e)
         });
 
         if (res.status === 200) {
-            console.log('Director Técnico actualizado con éxito.');
+            logger.info('Director Técnico actualizado con éxito.');
         } else if (res.status === 404) {
-             console.log('Error 404: Director Técnico no encontrado para actualizar.');
+            logger.info('Error 404: Director Técnico no encontrado para actualizar.');
         } else {
-             console.error('Error inesperado al actualizar Director Técnico. Status:', res.status);
+            logger.error('Error inesperado al actualizar Director Técnico. Status:', res.status);
         }
 
     } catch (err) {
-        console.error('Error de red al intentar actualizar Director Técnico:', err);
+        logger.error('Error de red al intentar actualizar Director Técnico:', err);
     }
 
     closeDirectorModal();
@@ -192,3 +199,5 @@ document.getElementById('editDirectorForm').addEventListener('submit', async (e)
  * CARGA INICIAL
  * ========================================================= */
 window.onload = loadDirectors;
+window.deletePlayer = deleteDirector;
+window.openModal = openDirectorModal;
