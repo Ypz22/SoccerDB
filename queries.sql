@@ -19,7 +19,7 @@ CREATE TABLE jugadores (
 
 CREATE TABLE technicalDirector(
         id SERIAL PRIMARY KEY,
-        name VARCHAR(100) NOT NULL UNIQUE,
+        name VARCHAR(100) NOT NULL,
         nationality VARCHAR(100),
         age INT,
         currentTeam VARCHAR(100),

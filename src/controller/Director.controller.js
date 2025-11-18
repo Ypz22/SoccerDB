@@ -10,8 +10,34 @@ const getAllDirector = async (req, res) => {
   }
 };
 
+
+const getDirectorById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await ConnectDB.query(
+      'SELECT * FROM technicalDirector WHERE id = $1',
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Director no encontrado' });
+    }
+
+    res.status(200).json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener director' });
+  }
+};
+
+
 const createDirector = async (req, res) => {
   const { name, nationality, age, currentTeam, yearsExperience, email, cellphone } = req.body;
+
+  if (!name || !nationality || !age || !currentTeam || !yearsExperience || !email|| !cellphone) {
+    return res.status(500).json({ error: 'Datos incompletos' });
+  }
+
   try {
     const result = await ConnectDB.query(
       'INSERT INTO technicalDirector (name, nationality, age, currentTeam, yearsExperience, email, cellphone) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
@@ -23,6 +49,9 @@ const createDirector = async (req, res) => {
     res.status(500).json({ error: 'Failed to add Technical Director' });
   }
 };
+
+
+
 
 const updateDirector = async (req, res) => {
   const { id } = req.params;
@@ -62,6 +91,7 @@ const deleteDirector = async (req, res) => {
 module.exports = {
   getAllDirector,
   createDirector,
+  getDirectorById,
   updateDirector,
   deleteDirector
 };
