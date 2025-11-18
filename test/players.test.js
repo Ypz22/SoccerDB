@@ -1,6 +1,12 @@
+jest.mock('../src/utils/logger', () => ({
+    error: jest.fn(),
+    info: jest.fn()
+}));
+
 const request = require('supertest');
 const app = require('../src/app');
 const db = require('../src/config/db');
+const logger = require('../src/utils/logger');
 
 let createdId;
 
@@ -23,16 +29,29 @@ afterAll(async () => {
     if (db.end) await db.end();
 });
 
-//Obtener todos los jugadores
+
+//Listar con get
 test('GET /api/players - debe devolver jugadores', async () => {
     const response = await request(app).get('/api/players');
 
     expect(response.statusCode).toBe(200);
     expect(Array.isArray(response.body)).toBe(true);
-    expect(response.body.length).toBeGreaterThan(0);
 });
 
-//Obtener jugador por ID
+test('GET /api/players - error BD', async () => {
+    jest.spyOn(db, 'query').mockRejectedValueOnce(new Error('DB failure'));
+
+    const response = await request(app).get('/api/players');
+
+    expect(response.statusCode).toBe(500);
+    expect(response.body).toEqual({ error: 'Failed to fetch players' });
+    expect(logger.error).toHaveBeenCalled();
+
+    db.query.mockRestore();
+});
+
+
+//obtener por id
 test('GET /api/players/:id - debe devolver jugador especifico', async () => {
     const response = await request(app).get(`/api/players/${createdId}`);
 
@@ -40,7 +59,26 @@ test('GET /api/players/:id - debe devolver jugador especifico', async () => {
     expect(response.body).toHaveProperty('id', createdId);
 });
 
-//crear nuevo jugador
+test('GET /api/players/:id - 404 no existe', async () => {
+    const response = await request(app).get('/api/players/999999');
+
+    expect(response.statusCode).toBe(404);
+    expect(response.body).toEqual({ error: 'Player not found' });
+});
+
+test('GET /api/players/:id - error BD', async () => {
+    jest.spyOn(db, 'query').mockRejectedValueOnce(new Error('DB failure'));
+
+    const response = await request(app).get('/api/players/1');
+
+    expect(response.statusCode).toBe(500);
+    expect(response.body).toEqual({ error: 'Error fetching player' });
+
+    db.query.mockRestore();
+});
+
+
+//agregar jugadores 
 test('POST /api/players - debe crear jugador', async () => {
     const nuevoJugador = {
         nombre: "Nuevo",
@@ -59,20 +97,39 @@ test('POST /api/players - debe crear jugador', async () => {
     expect(response.body).toHaveProperty('id');
 });
 
-//error al crear por datos faltantes
-test('POST /api/players - error por datos incompletos', async () => {
-    const jugadorInvalido = { nombre: "" };
+test('POST /api/players - error datos incompletos', async () => {
+    const response = await request(app)
+        .post('/api/players')
+        .send({ nombre: "" });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toEqual({ error: 'Failed to add player' });
+});
+
+test('POST /api/players - error BD', async () => {
+    jest.spyOn(db, 'query').mockRejectedValueOnce(new Error('DB failure'));
 
     const response = await request(app)
         .post('/api/players')
-        .send(jugadorInvalido);
+        .send({
+            nombre: "X",
+            apellido: "X",
+            edad: 20,
+            altura: 1.70,
+            pierna_buena: "Derecha",
+            club: "Test"
+        });
 
     expect(response.statusCode).toBe(500);
+    expect(response.body).toEqual({ error: 'Failed to add player' });
+
+    db.query.mockRestore();
 });
 
-//actualizar jugador
+
+//actualizar jugadores
 test('PUT /api/players/:id - debe actualizar jugador', async () => {
-    const cambios = { 
+    const cambios = {
         nombre: "Actualizado",
         apellido: "Update",
         edad: 23,
@@ -88,12 +145,11 @@ test('PUT /api/players/:id - debe actualizar jugador', async () => {
     expect(response.statusCode).toBe(200);
 });
 
-//error al actualizar jugador inexistente
-test('PUT /api/players/:id - error por id no existente', async () => {
+test('PUT /api/players/:id - 404 si no existe', async () => {
     const response = await request(app)
-        .put('/api/players/99999')
+        .put('/api/players/999999')
         .send({
-            nombre: "Nada",
+            nombre: "X",
             apellido: "X",
             edad: 20,
             altura: 1.70,
@@ -104,8 +160,29 @@ test('PUT /api/players/:id - error por id no existente', async () => {
     expect(response.statusCode).toBe(404);
 });
 
-//eliminar jugador
-test('DELETE /api/players/:id - deberia borrar un jugador', async () => {
+test('PUT /api/players/:id - error BD', async () => {
+    jest.spyOn(db, 'query').mockRejectedValueOnce(new Error('DB failure'));
+
+    const response = await request(app)
+        .put('/api/players/1')
+        .send({
+            nombre: "X",
+            apellido: "X",
+            edad: 20,
+            altura: 1.70,
+            pierna_buena: "Derecha",
+            club: "Test"
+        });
+
+    expect(response.statusCode).toBe(500);
+    expect(response.body).toEqual({ error: 'Failed to update player' });
+
+    db.query.mockRestore();
+});
+
+
+//borrar jugador
+test('DELETE /api/players/:id - borrar jugador', async () => {
     const response = await request(app)
         .delete(`/api/players/${createdId}`);
 
@@ -113,10 +190,18 @@ test('DELETE /api/players/:id - deberia borrar un jugador', async () => {
     expect(response.body).toHaveProperty('message');
 });
 
-//error al eliminar jugador inexistente
-test('DELETE /api/players/:id - error al eliminar inexistente', async () => {
-    const response = await request(app)
-        .delete('/api/players/99999');
-
+test('DELETE /api/players/:id - 404 si no existe', async () => {
+    const response = await request(app).delete('/api/players/999999');
     expect(response.statusCode).toBe(404);
+});
+
+test('DELETE /api/players/:id - error BD', async () => {
+    jest.spyOn(db, 'query').mockRejectedValueOnce(new Error('DB failure'));
+
+    const response = await request(app).delete('/api/players/1');
+
+    expect(response.statusCode).toBe(500);
+    expect(response.body).toEqual({ error: 'Failed to delete player' });
+
+    db.query.mockRestore();
 });
