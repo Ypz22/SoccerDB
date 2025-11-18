@@ -54,7 +54,7 @@ document.getElementById('teamForm').addEventListener('submit', async (e) => {
 
 /* ELIMINAR */
 async function deleteTeam(id) {
-  if (!confirm('¿Eliminar equipo?')) return;
+  if (!confirm('¿Eliminar equipo?')) {return;}
 
   await fetch(`/api/teams/${id}`, {
     method: 'DELETE'
