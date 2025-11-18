@@ -59,3 +59,34 @@
     width: 420px;
     filter: drop-shadow(0 0 30px var(--green-light));
 }
+
+.navbar {
+    width: 100%;
+    height: 70px;
+    background: var(--black);
+    color: var(--white);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 0 40px;
+    border-bottom: 2px solid var(--yellow);
+}
+
+/* Logo con imagen + texto */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+    color: var(--yellow);
+}
+
+.logo-img {
+    width: 45px;
+    height: 45px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid var(--yellow);
+}
