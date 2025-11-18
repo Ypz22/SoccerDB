@@ -1,3 +1,11 @@
+/* eslint-env browser */
+/* global fetch, document, window, confirm */
+
+const winston = require('winston');
+const logger = winston.createLogger({
+  transports: [new winston.transports.Console()]
+});
+
 /* CARGAR Y ORDENAR */
 async function loadPlayers() {
   try {
@@ -29,7 +37,7 @@ async function loadPlayers() {
     });
 
   } catch (err) {
-    console.error('Error cargando jugadores:', err);
+    logger.error('Error cargando jugadores:', err);
   }
 }
 
@@ -58,7 +66,7 @@ document.getElementById('playerForm').addEventListener('submit', async (e) => {
 
 /* ELIMINAR */
 async function deletePlayer(id) {
-  if (!confirm('¿Eliminar jugador?')) return;
+  if (!confirm('¿Eliminar jugador?')) { return; };
 
   await fetch(`/api/players/${id}`, {
     method: 'DELETE'
@@ -115,3 +123,6 @@ document.getElementById('editForm').addEventListener('submit', async (e) => {
 
 /* CARGA INICIAL */
 window.onload = loadPlayers;
+window.deletePlayer = deletePlayer;
+window.openModal = openModal;
+

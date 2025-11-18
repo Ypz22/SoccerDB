@@ -1,3 +1,10 @@
+/* eslint-env browser */
+/* global fetch, document, window, confirm */
+const winston = require('winston');
+const logger = winston.createLogger({
+  transports: [new winston.transports.Console()]
+});
+
 /* CARGAR Y ORDENAR */
 async function loadTeams() {
   try {
@@ -27,7 +34,7 @@ async function loadTeams() {
     });
 
   } catch (err) {
-    console.error('Error cargando equipos:', err);
+    logger.error('Error cargando equipos:', err);
   }
 }
 
@@ -54,7 +61,7 @@ document.getElementById('teamForm').addEventListener('submit', async (e) => {
 
 /* ELIMINAR */
 async function deleteTeam(id) {
-  if (!confirm('¿Eliminar equipo?')) {return;}
+  if (!confirm('¿Eliminar equipo?')) { return; }
 
   await fetch(`/api/teams/${id}`, {
     method: 'DELETE'
@@ -107,3 +114,5 @@ document.getElementById('editTeamForm').addEventListener('submit', async (e) => 
 
 /* CARGA INICIAL */
 window.onload = loadTeams;
+window.deletePlayer = deleteTeam;
+window.openModal = openTeamModal;
