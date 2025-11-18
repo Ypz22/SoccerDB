@@ -1,10 +1,7 @@
 /* eslint-env browser */
 /* global fetch, document, window, confirm */
 
-const winston = require('winston');
-const logger = winston.createLogger({
-  transports: [new winston.transports.Console()]
-});
+
 
 /* CARGAR Y ORDENAR */
 async function loadPlayers() {
@@ -37,7 +34,7 @@ async function loadPlayers() {
     });
 
   } catch (err) {
-    logger.error('Error cargando jugadores:', err);
+    console.error('Error cargando jugadores:', err);
   }
 }
 

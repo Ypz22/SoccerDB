@@ -1,9 +1,6 @@
 /* eslint-env browser */
 /* global fetch, document, window, confirm */
-const winston = require('winston');
-const logger = winston.createLogger({
-    transports: [new winston.transports.Console()]
-});
+
 
 const API_URL = '/api/directors';
 
@@ -45,7 +42,7 @@ async function loadDirectors() {
         });
 
     } catch (err) {
-        logger.error('Error cargando directores técnicos:', err);
+        console.error('Error cargando directores técnicos:', err);
         const table = document.getElementById('directorsTable');
         table.innerHTML = '<tr><td colspan="9">Error al cargar datos o no hay conexión.</td></tr>';
     }
