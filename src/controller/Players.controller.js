@@ -1,8 +1,6 @@
 const ConnectDB = require('../config/db.js');
-const logger = require('../utils/logger.js')
+const logger = require('../utils/logger.js');
 
-
-//Obtener todos los jugadores
 const getAllPlayers = async (req, res) => {
     try {
         const result = await ConnectDB.query('SELECT * FROM jugadores');
@@ -14,7 +12,6 @@ const getAllPlayers = async (req, res) => {
     }
 };
 
-//Obtener jugador por ID
 const getPlayerById = async (req, res) => {
     const { id } = req.params;
 
@@ -25,23 +22,21 @@ const getPlayerById = async (req, res) => {
         );
 
         if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'Jugador no encontrado' });
+            return res.status(404).json({ error: 'Player not found' });
         }
 
         res.status(200).json(result.rows[0]);
     } catch (error) {
-        logger.error('Error al obtener jugador:', error);
-        res.status(500).json({ error: 'Error al obtener jugador' });
+        logger.error('Error fetching player:', error);
+        res.status(500).json({ error: 'Error fetching player' });
     }
 };
 
-//Crear jugador
 const createPlayer = async (req, res) => {
     const { nombre, apellido, edad, altura, pierna_buena, club } = req.body;
 
-    //Validacion
     if (!nombre || !apellido || !edad || !altura || !pierna_buena || !club) {
-        return res.status(500).json({ error: 'Datos incompletos' });
+        return res.status(400).json({ error: 'Failed to add player' });
     }
 
     try {
@@ -59,7 +54,6 @@ const createPlayer = async (req, res) => {
     }
 };
 
-//Actualizar jugador
 const updatePlayer = async (req, res) => {
     const { id } = req.params;
     const { nombre, apellido, edad, altura, pierna_buena, club } = req.body;
@@ -67,24 +61,23 @@ const updatePlayer = async (req, res) => {
     try {
         const result = await ConnectDB.query(
             `UPDATE jugadores
-             SET nombre = $1, apellido = $2, edad = $3, altura = $4, pierna_buena = $5, club = $6
+             SET nombre=$1, apellido=$2, edad=$3, altura=$4, pierna_buena=$5, club=$6
              WHERE id = $7 RETURNING *`,
             [nombre, apellido, edad, altura, pierna_buena, club, id]
         );
 
         if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'Jugador no encontrado' });
+            return res.status(404).json({ error: 'Player not found' });
         }
 
         res.status(200).json(result.rows[0]);
         logger.info('Player updated successfully');
     } catch (error) {
-        logger.error('No se pudo actualizar los datos del jugador:', error);
-        res.status(500).json({ error: 'No se pudo actualizar los datos del jugador' });
+        logger.error('Failed to update player:', error);
+        res.status(500).json({ error: 'Failed to update player' });
     }
 };
 
-//Eliminar jugador
 const deletePlayer = async (req, res) => {
     const { id } = req.params;
 
@@ -95,14 +88,14 @@ const deletePlayer = async (req, res) => {
         );
 
         if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'Jugador no encontrado' });
+            return res.status(404).json({ error: 'Player not found' });
         }
 
-        res.status(200).json({ message: 'Jugador eliminado correctamente' });
-        logger.info('Jugador eliminado correctamente');
+        res.status(200).json({ message: 'Player deleted successfully' });
+        logger.info('Player deleted successfully');
     } catch (error) {
-        logger.error('Error al eliminar el jugador:', error);
-        res.status(500).json({ error: 'Error al eliminar el jugador' });
+        logger.error('Failed to delete player:', error);
+        res.status(500).json({ error: 'Failed to delete player' });
     }
 };
 
@@ -111,5 +104,5 @@ module.exports = {
     getPlayerById,
     createPlayer,
     updatePlayer,
-    deletePlayer
+    deletePlayer,
 };
