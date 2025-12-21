@@ -1,0 +1,69 @@
+<main class="container">
+    <h1 class="title">Gestión de Directores Técnicos</h1>
+
+    <section class="form-section">
+        <form (submit)="saveDirector()" class="form-horizontal">
+            <div class="input-group">
+                <label>Nombre</label>
+                <input type="text" [(ngModel)]="newDirector.name" name="name" required>
+            </div>
+            <div class="input-group">
+                <label>Nacionalidad</label>
+                <input type="text" [(ngModel)]="newDirector.nationality" name="nationality" required>
+            </div>
+            <div class="input-group">
+                <label>Edad</label>
+                <input type="number" [(ngModel)]="newDirector.age" name="age" required>
+            </div>
+            <div class="input-group">
+                <label>Equipo Actual</label>
+                <input type="text" [(ngModel)]="newDirector.currentTeam" name="currentTeam" required>
+            </div>
+            <div class="input-group">
+                <label>Años Exp.</label>
+                <input type="number" [(ngModel)]="newDirector.yearsExperience" name="yearsExperience" required>
+            </div>
+            <div class="input-group">
+                <label>Email</label>
+                <input type="email" [(ngModel)]="newDirector.email" name="email" required>
+            </div>
+            <div class="input-group">
+                <label>Celular</label>
+                <input type="text" [(ngModel)]="newDirector.cellphone" name="cellphone" required>
+            </div>
+            <button class="btn-add" type="submit">
+                <i class="fa-solid fa-user-plus"></i>
+            </button>
+        </form>
+    </section>
+
+    <section class="table-section">
+        <h2>Lista de Directores Técnicos</h2>
+        <div class="table-container">
+            <table class="directors-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Nacionalidad</th>
+                        <th>Equipo Actual</th>
+                        <th>Email</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let d of directors">
+                        <td>{{d.id}}</td>
+                        <td>{{d.name}}</td>
+                        <td>{{d.nationality}}</td>
+                        <td>{{d.currentteam || d.currentTeam}}</td>
+                        <td>{{d.email}}</td>
+                        <td>
+                            <i class="fa-solid fa-trash action-btn delete" (click)="deleteDirector(d.id)"></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>

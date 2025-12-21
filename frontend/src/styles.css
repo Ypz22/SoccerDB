@@ -1,1 +1,167 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+    --black: #000000;
+    --green-dark: #0f3b1f;
+    --green-mid: #0b8a1b;
+    --green-light: #38ff6a;
+    --yellow: #ffe45e;
+    --white: #ffffff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+html,
+body {
+    height: 100%;
+    background-color: var(--black);
+    overflow-x: hidden;
+}
+
+/* NAVBAR */
+.navbar {
+    width: 100%;
+    height: 70px;
+    background: var(--black);
+    color: var(--white);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 0 40px;
+    border-bottom: 2px solid var(--yellow);
+}
+
+.logo {
+    font-weight: bold;
+    color: var(--yellow);
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links li a {
+    color: var(--white);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.nav-links li a:hover {
+    color: var(--yellow);
+}
+
+.search-box input {
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.search-box button {
+    background: var(--yellow);
+    border: none;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+/* FOOTER */
+.footer {
+    width: 100%;
+    background: var(--black);
+    color: var(--yellow);
+    text-align: center;
+    padding: 15px 0;
+    margin-top: auto;
+}
+
+/* ✔ FORMULARIO HORIZONTAL */
+.form-horizontal {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.form-horizontal .form-group {
+    flex: 1;
+    min-width: 150px;
+}
+
+.form-horizontal input {
+    width: 100%;
+}
+
+/* ✔ BOTÓN DE AGREGAR CON ÍCONO */
+.btn-agregar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--verde-claro);
+    padding: 10px 18px;
+    border: none;
+    color: black;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.btn-agregar i {
+    font-size: 18px;
+}
+
+/* ✔ BOTONES EDITAR / ELIMINAR */
+.btn-accion {
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    color: black;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Editar */
+.btn-editar {
+    background: var(--amarillo);
+}
+
+/* Eliminar */
+.btn-eliminar {
+    background: #e74c3c;
+    color: white;
+}
+
+/* Iconos */
+.btn-accion i {
+    font-size: 16px;
+}
+
+/* ✔ TABLA CON SCROLL SI SE EXPANDE */
+.table-container {
+    max-height: 450px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--verde-claro) var(--negro);
+}
+
+.table-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: var(--verde-claro);
+    border-radius: 10px;
+}
+
+tbody tr:hover {
+    background: #222;
+}

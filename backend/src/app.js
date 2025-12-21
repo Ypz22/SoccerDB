@@ -4,12 +4,21 @@ const playerRoutes = require('./routes/Players.routes');
 const directorRoutes = require('./routes/Director.routes');
 const ConnectDB = require('./config/db');
 const dotenv = require('dotenv');
+const cors = require('cors');
+
 
 dotenv.config();
 ConnectDB.connect();
 
 const app = express();
+
+app.use(cors({
+    origin: 'http://localhost:4200'
+}));
+
 app.use(express.json());
+
+
 
 app.use(express.static('src/public'));
 

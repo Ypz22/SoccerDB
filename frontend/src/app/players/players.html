@@ -1,1 +1,69 @@
-<p>players works!</p>
+<main class="container">
+    <h1 class="title">Gestión de Jugadores</h1>
+
+    <section class="form-section">
+        <form (submit)="savePlayer()" class="form-horizontal">
+            <div class="input-group">
+                <label>Nombre</label>
+                <input type="text" [(ngModel)]="newPlayer.nombre" name="nombre" required>
+            </div>
+            <div class="input-group">
+                <label>Apellido</label>
+                <input type="text" [(ngModel)]="newPlayer.apellido" name="apellido" required>
+            </div>
+            <div class="input-group">
+                <label>Edad</label>
+                <input type="number" [(ngModel)]="newPlayer.edad" name="edad" required>
+            </div>
+            <div class="input-group">
+                <label>Altura</label>
+                <input type="number" step="0.01" [(ngModel)]="newPlayer.altura" name="altura" required>
+            </div>
+            <div class="input-group">
+                <label>Pierna Buena</label>
+                <input type="text" [(ngModel)]="newPlayer.pierna_buena" name="pierna_buena" required>
+            </div>
+            <div class="input-group">
+                <label>Club</label>
+                <input type="text" [(ngModel)]="newPlayer.club" name="club" required>
+            </div>
+            <button class="btn-add" type="submit">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+        </form>
+    </section>
+
+    <section class="table-section">
+        <h2>Lista de Jugadores</h2>
+        <div class="table-container">
+            <table class="players-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Edad</th>
+                        <th>Altura</th>
+                        <th>Pierna</th>
+                        <th>Club</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let p of players">
+                        <td>{{p.id}}</td>
+                        <td>{{p.nombre}}</td>
+                        <td>{{p.apellido}}</td>
+                        <td>{{p.edad}}</td>
+                        <td>{{p.altura}}</td>
+                        <td>{{p.pierna_buena}}</td>
+                        <td>{{p.club}}</td>
+                        <td>
+                            <i class="fa-solid fa-trash action-btn delete" (click)="deletePlayer(p.id)"></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>

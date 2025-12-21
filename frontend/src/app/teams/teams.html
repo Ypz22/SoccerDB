@@ -1,0 +1,57 @@
+<main class="container">
+    <h1 class="title">Gestión de Equipos</h1>
+
+    <section class="form-section">
+        <form (submit)="saveTeam()" class="form-horizontal">
+            <div class="input-group">
+                <label>Nombre</label>
+                <input type="text" [(ngModel)]="newTeam.name" name="name" required>
+            </div>
+            <div class="input-group">
+                <label>Ciudad</label>
+                <input type="text" [(ngModel)]="newTeam.city" name="city" required>
+            </div>
+            <div class="input-group">
+                <label>Estadio</label>
+                <input type="text" [(ngModel)]="newTeam.stadium" name="stadium" required>
+            </div>
+            <div class="input-group">
+                <label>Año Fundación</label>
+                <input type="number" [(ngModel)]="newTeam.year_foundation" name="year" required>
+            </div>
+            <button class="btn-add" type="submit">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+        </form>
+    </section>
+
+    <section class="table-section">
+        <h2>Lista de Equipos</h2>
+        <div class="table-container">
+            <table class="teams-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Ciudad</th>
+                        <th>Estadio</th>
+                        <th>Año</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let t of teams">
+                        <td>{{t.id}}</td>
+                        <td>{{t.name}}</td>
+                        <td>{{t.city}}</td>
+                        <td>{{t.stadium}}</td>
+                        <td>{{t.year_foundation}}</td>
+                        <td>
+                            <i class="fa-solid fa-trash action-btn delete" (click)="deleteTeam(t.id)"></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>

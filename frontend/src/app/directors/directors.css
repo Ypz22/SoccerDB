@@ -22,10 +22,12 @@
 
 .form-horizontal {
     display: flex;
-    flex-wrap: wrap; /* Añadido para que se vea bien en varios tamaños */
+    flex-wrap: wrap;
+    /* Añadido para que se vea bien en varios tamaños */
     align-items: flex-end;
     justify-content: center;
-    gap: 20px; /* Reducido ligeramente el gap para más espacio */
+    gap: 20px;
+    /* Reducido ligeramente el gap para más espacio */
 }
 
 /* Ajustes para Responsividad */
@@ -34,6 +36,7 @@
         flex-direction: column;
         align-items: stretch;
     }
+
     .input-group {
         width: 100%;
     }
@@ -85,14 +88,17 @@
 .table-container {
     max-height: 400px;
     overflow-y: auto;
-    overflow-x: auto; /* Añadido para manejar la tabla más ancha */
+    overflow-x: auto;
+    /* Añadido para manejar la tabla más ancha */
     border: 2px solid var(--green-light);
     border-radius: 10px;
 }
 
-.directors-table { /* Cambiado de .teams-table a .directors-table */
+.directors-table {
+    /* Cambiado de .teams-table a .directors-table */
     width: 100%;
-    min-width: 900px; /* Asegura que todos los campos quepan */
+    min-width: 900px;
+    /* Asegura que todos los campos quepan */
     border-collapse: collapse;
 }
 
@@ -155,7 +161,8 @@
     border: 2px solid var(--yellow);
     border-radius: 10px;
     width: 90%;
-    max-width: 400px; /* Ancho ajustado */
+    max-width: 400px;
+    /* Ancho ajustado */
 }
 
 .modal-content h2 {
