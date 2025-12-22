@@ -15,6 +15,10 @@ const getAllTeams = async (req, res) => {
 const getTeamById = async (req, res) => {
     const { id } = req.params;
 
+    if (isNaN(id)) {
+        return res.status(400).json({ error: 'El parámetro "id" debe ser numérico' });
+    }
+
     try {
         const result = await ConnectDB.query(
             'SELECT * FROM teams WHERE id = $1',
@@ -34,14 +38,28 @@ const getTeamById = async (req, res) => {
 
 const createTeam = async (req, res) => {
     const { name, city, stadium, year_foundation } = req.body;
-    if (!name || !city || !stadium || !year_foundation) {
-        return res.status(400).json({ error: 'Failed to add team' });
+
+    if (!name) {
+        return res.status(400).json({ error: 'El campo "name" es obligatorio' });
     }
+    if (!city) {
+        return res.status(400).json({ error: 'El campo "city" es obligatorio' });
+    }
+    if (!stadium) {
+        return res.status(400).json({ error: 'El campo "stadium" es obligatorio' });
+    }
+    if (year_foundation === undefined) {
+        return res.status(400).json({ error: 'El campo "year_foundation" es obligatorio' });
+    }
+
     try {
         const result = await ConnectDB.query(
-            'INSERT INTO teams (name, city, stadium, year_foundation) VALUES ($1, $2, $3, $4) RETURNING *',
+            `INSERT INTO teams (name, city, stadium, year_foundation)
+             VALUES ($1, $2, $3, $4)
+             RETURNING *`,
             [name, city, stadium, year_foundation]
         );
+
         res.status(201).json(result.rows[0]);
         logger.info('Team added successfully');
     } catch (error) {
@@ -53,14 +71,37 @@ const createTeam = async (req, res) => {
 const updateTeam = async (req, res) => {
     const { id } = req.params;
     const { name, city, stadium, year_foundation } = req.body;
+
+    if (isNaN(id)) {
+        return res.status(400).json({ error: 'El parámetro "id" debe ser numérico' });
+    }
+
+    if (!name) {
+        return res.status(400).json({ error: 'El campo "name" es obligatorio' });
+    }
+    if (!city) {
+        return res.status(400).json({ error: 'El campo "city" es obligatorio' });
+    }
+    if (!stadium) {
+        return res.status(400).json({ error: 'El campo "stadium" es obligatorio' });
+    }
+    if (year_foundation === undefined) {
+        return res.status(400).json({ error: 'El campo "year_foundation" es obligatorio' });
+    }
+
     try {
         const result = await ConnectDB.query(
-            'UPDATE teams SET name = $1, city = $2, stadium = $3, year_foundation = $4 WHERE id = $5 RETURNING *',
+            `UPDATE teams
+             SET name=$1, city=$2, stadium=$3, year_foundation=$4
+             WHERE id=$5
+             RETURNING *`,
             [name, city, stadium, year_foundation, id]
         );
+
         if (result.rows.length === 0) {
             return res.status(404).json({ error: 'Team not found' });
         }
+
         res.status(200).json(result.rows[0]);
         logger.info('Team updated successfully');
     } catch (error) {
@@ -71,14 +112,21 @@ const updateTeam = async (req, res) => {
 
 const deleteTeam = async (req, res) => {
     const { id } = req.params;
+
+    if (isNaN(id)) {
+        return res.status(400).json({ error: 'El parámetro "id" debe ser numérico' });
+    }
+
     try {
         const result = await ConnectDB.query(
             'DELETE FROM teams WHERE id = $1 RETURNING *',
             [id]
         );
+
         if (result.rows.length === 0) {
             return res.status(404).json({ error: 'Team not found' });
         }
+
         res.status(200).json({ message: 'Team deleted successfully' });
         logger.info('Team deleted successfully');
     } catch (error) {
