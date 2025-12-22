@@ -11,10 +11,12 @@ const {
 
 const router = express.Router();
 
+router.use(authMiddleware);
+
 router.get('/', authMiddleware, getAllPlayers);
-router.get('/:id', authMiddleware,getPlayerById);
-router.post('/', authMiddleware,createPlayer);
-router.put('/:id',authMiddleware, updatePlayer);
-router.delete('/:id', authMiddleware,deletePlayer);
+router.get('/:id', authMiddleware, getPlayerById);
+router.post('/', authMiddleware, createPlayer);
+router.put('/:id', authMiddleware, updatePlayer);
+router.delete('/:id', authMiddleware, deletePlayer);
 
 module.exports = router;

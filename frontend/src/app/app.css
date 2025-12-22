@@ -259,3 +259,19 @@ tbody tr:hover {
 a {
     cursor: pointer;
 }
+
+.logout-button {
+    background-color: #dc3545;
+    /* Rojo para indicar salida */
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.logout-button:hover {
+    background-color: #c82333;
+}

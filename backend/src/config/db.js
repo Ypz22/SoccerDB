@@ -11,8 +11,8 @@ const ConnectDB = new pg.Client({
     user: 'admin',
     host: 'localhost',
     database: 'soccerdb',
-    password: 'admin123',
-    port: 5432, 
+    password: 'admin',
+    port: 5432,
 });
 
 const connectDB = async () => {

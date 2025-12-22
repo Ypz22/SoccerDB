@@ -29,6 +29,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     const { email, password } = req.body;
 
+
     try {
         const result = await ConnectDB.query(
             'SELECT * FROM users WHERE email = $1',
@@ -42,15 +43,17 @@ const login = async (req, res) => {
         const user = result.rows[0];
         const isMatch = await bcrypt.compare(password, user.password);
 
+
         if (!isMatch) {
             return res.status(401).json({ error: 'Credenciales inválidas' });
         }
 
         const token = jwt.sign(
             { id: user.id, email: user.email, role: user.role },
-            process.env.JWT_SECRET,
-            { expiresIn: process.env.JWT_EXPIRES }
+            "KJHf83kjsd9F!@#23kslD9fjs8FJsl39@!",
+            { expiresIn: "1h" }
         );
+
 
         res.json({ token });
     } catch (error) {

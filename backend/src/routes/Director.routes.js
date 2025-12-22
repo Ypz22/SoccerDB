@@ -10,10 +10,12 @@ const {
 
 const router = express.Router();
 
-router.get('/', authMiddleware,getAllDirector);
-router.get('/:id', authMiddleware,getDirectorById);
-router.post('/', authMiddleware,createDirector);
-router.put('/:id',authMiddleware,updateDirector);
-router.delete('/:id',authMiddleware, deleteDirector);
+router.use(authMiddleware);
+
+router.get('/', authMiddleware, getAllDirector);
+router.get('/:id', authMiddleware, getDirectorById);
+router.post('/', authMiddleware, createDirector);
+router.put('/:id', authMiddleware, updateDirector);
+router.delete('/:id', authMiddleware, deleteDirector);
 
 module.exports = router;
