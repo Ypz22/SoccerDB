@@ -5,6 +5,7 @@ const directorRoutes = require('./routes/Director.routes');
 const ConnectDB = require('./config/db');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const authRoutes = require('./routes/auth.routes');
 
 
 dotenv.config();
@@ -17,7 +18,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
-
+app.use('/api/auth', authRoutes);
 
 
 app.use(express.static('src/public'));

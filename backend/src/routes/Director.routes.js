@@ -1,4 +1,5 @@
 const express = require('express');
+const authMiddleware = require('../middleware/auth.middleware.js');
 const {
   getAllDirector,
   createDirector,
@@ -9,10 +10,10 @@ const {
 
 const router = express.Router();
 
-router.get('/', getAllDirector);
-router.get('/:id', getDirectorById);
-router.post('/', createDirector);
-router.put('/:id', updateDirector);
-router.delete('/:id', deleteDirector);
+router.get('/', authMiddleware,getAllDirector);
+router.get('/:id', authMiddleware,getDirectorById);
+router.post('/', authMiddleware,createDirector);
+router.put('/:id',authMiddleware,updateDirector);
+router.delete('/:id',authMiddleware, deleteDirector);
 
 module.exports = router;

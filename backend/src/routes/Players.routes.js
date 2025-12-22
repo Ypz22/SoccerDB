@@ -1,4 +1,6 @@
 const express = require('express');
+const authMiddleware = require('../middleware/auth.middleware.js');
+
 const {
   getAllPlayers,
   getPlayerById,
@@ -9,10 +11,10 @@ const {
 
 const router = express.Router();
 
-router.get('/', getAllPlayers);
-router.get('/:id', getPlayerById);
-router.post('/', createPlayer);
-router.put('/:id', updatePlayer);
-router.delete('/:id', deletePlayer);
+router.get('/', authMiddleware, getAllPlayers);
+router.get('/:id', authMiddleware,getPlayerById);
+router.post('/', authMiddleware,createPlayer);
+router.put('/:id',authMiddleware, updatePlayer);
+router.delete('/:id', authMiddleware,deletePlayer);
 
 module.exports = router;
