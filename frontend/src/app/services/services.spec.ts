@@ -1,23 +1,20 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { SoccerService } from './services';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-import { Services } from './services';
+describe('SoccerService', () => {
+  let service: SoccerService;
 
-describe('Services', () => {
-  let component: Services;
-  let fixture: ComponentFixture<Services>;
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [SoccerService]
+    });
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [Services]
-    })
-    .compileComponents();
-
-    fixture = TestBed.createComponent(Services);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    service = TestBed.inject(SoccerService);
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should be created', () => {
+    expect(service).toBeTruthy();
   });
 });
