@@ -1,21 +1,32 @@
 import { Component, OnInit } from '@angular/core';
-import { SoccerService } from '../services/services';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { SoccerService } from '../services/services';
 
 @Component({
   selector: 'app-directors',
+  standalone: true, // ✅ OBLIGATORIO si usas imports
   templateUrl: './directors.html',
-  imports: [CommonModule, FormsModule],
-  styleUrls: ['./directors.css']
+  styleUrls: ['./directors.css'],
+  imports: [CommonModule, FormsModule] // ❌ NO te importas a ti mismo
 })
 export class DirectorsComponent implements OnInit {
   directors: any[] = [];
-  newDirector = { name: '', nationality: '', age: null, currentTeam: '', yearsExperience: null, email: '', cellphone: '' };
+  newDirector = {
+    name: '',
+    nationality: '',
+    age: null,
+    currentTeam: '',
+    yearsExperience: null,
+    email: '',
+    cellphone: ''
+  };
 
   constructor(private soccerService: SoccerService) { }
 
-  ngOnInit() { this.loadDirectors(); }
+  ngOnInit() {
+    this.loadDirectors();
+  }
 
   loadDirectors() {
     this.soccerService.getDirectors().subscribe(res => {
@@ -32,11 +43,21 @@ export class DirectorsComponent implements OnInit {
 
   deleteDirector(id: number) {
     if (confirm(`¿Eliminar Director Técnico con ID ${id}?`)) {
-      this.soccerService.deleteDirector(id).subscribe(() => this.loadDirectors());
+      this.soccerService.deleteDirector(id).subscribe(() => {
+        this.loadDirectors();
+      });
     }
   }
 
   resetForm() {
-    this.newDirector = { name: '', nationality: '', age: null, currentTeam: '', yearsExperience: null, email: '', cellphone: '' };
+    this.newDirector = {
+      name: '',
+      nationality: '',
+      age: null,
+      currentTeam: '',
+      yearsExperience: null,
+      email: '',
+      cellphone: ''
+    };
   }
 }
