@@ -8,10 +8,10 @@ const logger = winston.createLogger({
 dotenv.config();
 
 const ConnectDB = new pg.Client({
-    user: 'admin',
+    user: 'postgres',
     host: 'localhost',
     database: 'soccerdb',
-    password: 'admin',
+    password: '150404',
     port: 5432,
 });
 
