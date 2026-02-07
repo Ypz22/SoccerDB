@@ -55,7 +55,7 @@ jobs:
         working-directory: backend
         run: npm test
 
-  frontend:
+   frontend:
     name: Frontend CI
     runs-on: ubuntu-latest
 
@@ -64,21 +64,24 @@ jobs:
         working-directory: frontend
 
     steps:
-      - name: Checkout repo
+      - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: 🟢 Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: npm install
 
-      - name: Run ESLint
+      - name: 🔍 Run ESLint
         run: npm run lint
 
-      - name: Build frontend
+      - name: 🧪 Run frontend tests (Karma + Jasmine)
+        run: npm test -- --watch=false --browsers=ChromeHeadless
+
+      - name: 🏗️ Build frontend
         run: npm run build
 
   performance:
