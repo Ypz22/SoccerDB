@@ -137,7 +137,7 @@ jobs:
       - name: Run k6 tests
         uses: grafana/k6-action@v0.3.0
         with:
-         filename: k6/carga-y-rendimiento.js
+         filename: backend/carga-y-rendimiento.js
 
 
         
