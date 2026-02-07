@@ -55,7 +55,7 @@ jobs:
         working-directory: backend
         run: npm test
 
-   frontend:
+  frontend:
     name: Frontend CI
     runs-on: ubuntu-latest
 
