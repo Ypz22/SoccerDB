@@ -140,9 +140,6 @@ jobs:
           pm2 start server.js --name soccer-api
           pm2 save
 
-      - name: Show pm2 logs (debug)
-        run: pm2 logs soccer-api --lines 20 || true
-
       - name: Wait for backend
         run: wait-on --timeout 60000 http://localhost:3000/api/players
 
