@@ -128,16 +128,20 @@ jobs:
         run: |
           psql postgresql://postgres:postgres@localhost:5432/soccer_test < querys.sql
       
-      - name: Install pm2
-        run: npm install -g pm2
+      - name: Install pm2 and wait-on
+        run: npm install -g pm2 wait-on
 
       - name: Start backend with pm2
         working-directory: backend
         run: |
           pm2 start server.js --name soccer-api
+          pm2 save
+
+      - name: Show pm2 logs (debug)
+        run: pm2 logs soccer-api --lines 20 || true
 
       - name: Wait for backend
-        run: npx wait-on http://localhost:3000/api/players
+        run: wait-on --timeout 60000 http://localhost:3000/api/players
 
       - name: Run k6 tests
         uses: grafana/k6-action@v0.3.0
