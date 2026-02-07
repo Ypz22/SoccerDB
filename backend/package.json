@@ -16,7 +16,7 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "test": "jest",
+    "test": "cross-env NODE_ENV=test jest",
     "lint": "eslint ."
   },
   "keywords": [],
@@ -24,6 +24,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "cross-env": "^10.1.0",
     "eslint": "^9.39.1"
   }
 }

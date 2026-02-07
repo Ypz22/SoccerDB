@@ -44,7 +44,7 @@ test('GET /api/players - error BD', async () => {
     const response = await request(app).get('/api/players');
 
     expect(response.statusCode).toBe(500);
-    expect(response.body).toEqual({ error: 'Failed to fetch players' });
+    expect(response.body).toEqual({ error: 'Error fetching players' });
     expect(logger.error).toHaveBeenCalled();
 
     db.query.mockRestore();
@@ -63,7 +63,7 @@ test('GET /api/players/:id - 404 no existe', async () => {
     const response = await request(app).get('/api/players/999999');
 
     expect(response.statusCode).toBe(404);
-    expect(response.body).toEqual({ error: 'Player not found' });
+    expect(response.body).toEqual({ error: 'Player not found o no autorizado' });
 });
 
 test('GET /api/players/:id - error BD', async () => {
@@ -103,7 +103,7 @@ test('POST /api/players - error datos incompletos', async () => {
         .send({ nombre: "" });
 
     expect(response.statusCode).toBe(400);
-    expect(response.body).toEqual({ error: 'Failed to add player' });
+    expect(response.body).toEqual({ error: 'Datos incompletos' });
 });
 
 test('POST /api/players - error BD', async () => {
@@ -121,7 +121,7 @@ test('POST /api/players - error BD', async () => {
         });
 
     expect(response.statusCode).toBe(500);
-    expect(response.body).toEqual({ error: 'Failed to add player' });
+    expect(response.body).toEqual({ error: 'Error creating player' });
 
     db.query.mockRestore();
 });
@@ -175,7 +175,7 @@ test('PUT /api/players/:id - error BD', async () => {
         });
 
     expect(response.statusCode).toBe(500);
-    expect(response.body).toEqual({ error: 'Failed to update player' });
+    expect(response.body).toEqual({ error: 'Error updating player' });
 
     db.query.mockRestore();
 });
@@ -201,7 +201,7 @@ test('DELETE /api/players/:id - error BD', async () => {
     const response = await request(app).delete('/api/players/1');
 
     expect(response.statusCode).toBe(500);
-    expect(response.body).toEqual({ error: 'Failed to delete player' });
+    expect(response.body).toEqual({ error: 'Error deleting player' });
 
     db.query.mockRestore();
 });

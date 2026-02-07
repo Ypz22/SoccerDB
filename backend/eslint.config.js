@@ -6,6 +6,11 @@ module.exports = [
         languageOptions: {
             ecmaVersion: 2021,
             sourceType: 'commonjs',
+            globals: {
+                process: 'readonly',
+                module: 'readonly',
+                require: 'readonly'
+            }
         },
         rules: {
             ...js.configs.recommended.rules,
@@ -17,7 +22,7 @@ module.exports = [
             'eqeqeq': ['error', 'always'],
             'curly': ['error', 'all'],
             'no-var': ['error'],
-            'prefer-const': ['error'],
-        },
+            'prefer-const': ['error']
+        }
     }
 ];
