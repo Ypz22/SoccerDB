@@ -13,7 +13,7 @@ export let options = {
     },
 };
 
-const TOKEN = 'Pondran aqui el token que les de para que funcione la autenticacion';
+const TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiZW1haWwiOiJhZG1pbkBzb2NjZXIzLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzcwNDk1MDM2LCJleHAiOjE3NzA0OTg2MzZ9.lvzOT0UMoRGNDE9uJWzFZNdMZFWwshd1tZh6WSbd5Yo';
 
 export default function () {
     const params = {
