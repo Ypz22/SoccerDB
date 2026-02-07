@@ -13,20 +13,26 @@ export let options = {
     },
 };
 
-const TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiZW1haWwiOiJhZG1pbkBzb2NjZXIzLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzcwNDk1MDM2LCJleHAiOjE3NzA0OTg2MzZ9.lvzOT0UMoRGNDE9uJWzFZNdMZFWwshd1tZh6WSbd5Yo';
+const BASE_URL = __ENV.BASE_URL || 'http://localhost:3000';
+const TOKEN = __ENV.TOKEN;
+
+if (!TOKEN) {
+    throw new Error('TOKEN no definido');
+}
 
 export default function () {
     const params = {
         headers: {
             Authorization: `Bearer ${TOKEN}`,
+            'Content-Type': 'application/json',
         },
     };
 
-    const res = http.get('http://localhost:3000/api/players', params);
+    const res = http.get(`${BASE_URL}/api/players`, params);
 
     check(res, {
         'status is 200': (r) => r.status === 200,
-        'response time is less than 500ms': (r) => r.timings.duration < 500,
+        'response < 500ms': (r) => r.timings.duration < 500,
     });
 
     sleep(1);

@@ -89,13 +89,63 @@ jobs:
     runs-on: ubuntu-latest
     needs: backend-tests
 
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: soccer_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      NODE_ENV: test
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: soccer_test
+      BASE_URL: http://localhost:3000
+      TOKEN: ${{ secrets.K6_TOKEN }}
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install k6
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm install
+
+      - name: Create DB schema
+        working-directory: backend
         run: |
-          sudo apt update
-          sudo apt install -y k6
+          psql postgresql://postgres:postgres@localhost:5432/soccer_test < querys.sql
+      
+      - name: Install pm2
+        run: npm install -g pm2
+
+      - name: Start backend with pm2
+        working-directory: backend
+        run: |
+          pm2 start server.js --name soccer-api
+
+      - name: Wait for backend
+        run: npx wait-on http://localhost:3000/api/players
 
       - name: Run k6 tests
-        run: k6 run k6/carga-y-rendimiento.js
+        uses: grafana/k6-action@v0.3.0
+        with:
+         filename: backend/carga-y-rendimiento.js
+
+
+        
