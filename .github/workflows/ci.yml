@@ -137,11 +137,14 @@ jobs:
       - name: Start backend with pm2
         working-directory: backend
         run: |
-          pm2 start server.js --name soccer-api
-          pm2 save
+          export PORT=3000
+          pm2 start server.js --name soccer-api --update-env
 
       - name: Wait for backend
         run: wait-on --timeout 60000 http://localhost:3000/api/players
+      
+      - name: Check pm2 status
+        run: pm2 status
 
       - name: Run k6 tests
         uses: grafana/k6-action@v0.3.0
