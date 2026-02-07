@@ -1,6 +1,4 @@
 name: CI SoccerDB
-name: CI SoccerDB
-
 on:
   push:
     branches: [ main, develop ]
