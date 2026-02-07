@@ -127,11 +127,14 @@ jobs:
         working-directory: backend
         run: |
           psql postgresql://postgres:postgres@localhost:5432/soccer_test < querys.sql
+      
+      - name: Install pm2
+        run: npm install -g pm2
 
-      - name: Start backend
+      - name: Start backend with pm2
         working-directory: backend
         run: |
-          npm start &
+          pm2 start server.js --name soccer-api
 
       - name: Wait for backend
         run: npx wait-on http://localhost:3000/api/players
