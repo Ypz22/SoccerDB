@@ -29,6 +29,7 @@ const getDirectorById = async (req, res) => {
         }
         res.json(result.rows[0]);
     } catch (error) {
+        logger.error(error);
         res.status(500).json({ error: 'Error al obtener director' });
     }
 };
@@ -114,6 +115,7 @@ const deleteDirector = async (req, res) => {
         }
         res.json({ message: 'Director eliminado' });
     } catch (error) {
+        logger.error(error);
         res.status(500).json({ error: 'Error al eliminar director' });
     }
 };

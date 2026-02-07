@@ -12,7 +12,7 @@ const getAllPlayers = async (req, res) => {
         logger.info('Players fetched by user');
     } catch (error) {
         logger.error(error);
-        res.status(500).json({ error: 'Failed to fetch players' });
+        res.status(500).json({ error: 'Error fetching players' });
     }
 };
 
@@ -36,6 +36,7 @@ const getPlayerById = async (req, res) => {
 
         res.json(result.rows[0]);
     } catch (error) {
+        logger.error(error);
         res.status(500).json({ error: 'Error fetching player' });
     }
 };
@@ -60,7 +61,8 @@ const createPlayer = async (req, res) => {
         res.status(201).json(result.rows[0]);
         logger.info('Player created for user');
     } catch (error) {
-        res.status(500).json({ error: 'Failed to add player' });
+        logger.error(error);
+        res.status(500).json({ error: 'Error creating player' });
     }
 };
 
@@ -89,7 +91,8 @@ const updatePlayer = async (req, res) => {
         res.json(result.rows[0]);
         logger.info('Player updated by user');
     } catch (error) {
-        res.status(500).json({ error: 'Failed to update player' });
+        logger.error(error);
+        res.status(500).json({ error: 'Error updating player' });
     }
 };
 
@@ -114,7 +117,8 @@ const deletePlayer = async (req, res) => {
         res.json({ message: 'Player deleted successfully' });
         logger.info('Player deleted by user');
     } catch (error) {
-        res.status(500).json({ error: 'Failed to delete player' });
+        logger.error(error);
+        res.status(500).json({ error: 'Error deleting player' });
     }
 };
 

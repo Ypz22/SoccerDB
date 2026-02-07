@@ -36,6 +36,7 @@ const getTeamById = async (req, res) => {
 
         res.json(result.rows[0]);
     } catch (error) {
+        logger.error(error);
         res.status(500).json({ error: 'Error fetching team' });
     }
 };
@@ -59,7 +60,8 @@ const createTeam = async (req, res) => {
         res.status(201).json(result.rows[0]);
         logger.info('Team created for user');
     } catch (error) {
-        res.status(500).json({ error: 'Failed to add team' });
+        logger.error(error);
+        res.status(500).json({ error: 'Error creating team' });
     }
 };
 
@@ -88,7 +90,8 @@ const updateTeam = async (req, res) => {
         res.json(result.rows[0]);
         logger.info('Team updated by user');
     } catch (error) {
-        res.status(500).json({ error: 'Failed to update team' });
+        logger.error(error);
+        res.status(500).json({ error: 'Error updating team' });
     }
 };
 
@@ -113,7 +116,8 @@ const deleteTeam = async (req, res) => {
         res.json({ message: 'Team deleted successfully' });
         logger.info('Team deleted by user');
     } catch (error) {
-        res.status(500).json({ error: 'Failed to delete team' });
+        logger.error(error);
+        res.status(500).json({ error: 'Error deleting team' });
     }
 };
 

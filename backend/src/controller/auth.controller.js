@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const ConnectDB = require('../config/db');
+const logger = require('../utils/logger');
 
 const register = async (req, res) => {
     const { username, email, password } = req.body;
@@ -22,6 +23,7 @@ const register = async (req, res) => {
             user: result.rows[0]
         });
     } catch (error) {
+        logger.error(error.message);
         res.status(500).json({ error: 'Error al registrar usuario' });
     }
 };
@@ -50,13 +52,14 @@ const login = async (req, res) => {
 
         const token = jwt.sign(
             { id: user.id, email: user.email, role: user.role },
-            "KJHf83kjsd9F!@#23kslD9fjs8FJsl39@!",
-            { expiresIn: "1h" }
+            'KJHf83kjsd9F!@#23kslD9fjs8FJsl39@!',
+            { expiresIn: '1h' }
         );
 
 
         res.json({ token });
     } catch (error) {
+        logger.error(error.message);
         res.status(500).json({ error: 'Error al iniciar sesión' });
     }
 };
