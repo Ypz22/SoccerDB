@@ -134,13 +134,10 @@ jobs:
           npm start &
           sleep 10
 
-      - name: Install k6
-        run: |
-          sudo apt update
-          sudo apt install -y k6
-
       - name: Run k6 tests
-        run: k6 run k6/carga-y-rendimiento.js
+        uses: grafana/k6-action@v0.3.0
+        with:
+         filename: k6/carga-y-rendimiento.js
 
 
         
