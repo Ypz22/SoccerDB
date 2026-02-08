@@ -103,14 +103,14 @@ jobs:
 
       - name: Start application
         run: |
-          npm start &
+          npm start > backend.log 2>&1 &
           echo "Waiting for backend..."
-          for i in {1..20}; do
+          for i in {1..30}; do
             if curl -s http://localhost:3000/api/players > /dev/null; then
               echo "Backend is up!"
               break
             fi
-            sleep 3
+            sleep 2
           done
 
       - name: Run k6 load test
@@ -119,6 +119,11 @@ jobs:
           TOKEN: ${{ secrets.API_TOKEN }}
         with:
           filename: backend/carga-y-rendimiento.js
+
+          
+      - name: Show backend logs if failed
+        if: failure()
+        run: cat backend.log
 
 
 
