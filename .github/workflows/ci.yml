@@ -117,7 +117,7 @@ jobs:
           sudo apt-get install -y k6
 
       - name: Run k6 load test
-        run: k6 run k6/load-test.js
+        run: k6 run backend/carga-y-rendimiento.js
 
 
         
