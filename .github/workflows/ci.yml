@@ -106,15 +106,10 @@ jobs:
           npm start &
           sleep 10
 
-      - name: Install k6
-        run: |
-          curl -L https://github.com/grafana/k6/releases/latest/download/k6-linux-amd64.tar.gz -o k6.tar.gz
-          tar -xzf k6.tar.gz
-          sudo mv k6-*/k6 /usr/local/bin/k6
-          k6 version
-
       - name: Run k6 load test
-        run: k6 run backend/carga-y-rendimiento.js
+        uses: grafana/k6-action@v0.3.0
+        with:
+          filename: backend/carga-y-rendimiento.js
 
 
         
