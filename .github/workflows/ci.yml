@@ -86,7 +86,7 @@ jobs:
         run: npm test -- --watch=false --browsers=ChromeHeadless
 
       - name: 🧪 Run frontend tests (coverage)
-        run: npm run test -- --watch=false --browsers=ChromeHeadless --coverage
+        run: npm run test -- --watch=false --browsers=ChromeHeadless --code-coverage
 
 
       - name: 🏗️ Build frontend
