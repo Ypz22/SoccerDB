@@ -55,6 +55,10 @@ jobs:
         working-directory: backend
         run: npm test
 
+      - name: 🧪 Run backend tests ESlint
+        working-directory: backend
+        run: npm run lint
+
       - name: Coverage Test
         working-directory: backend
         run: npm run test -- --coverage 
