@@ -55,7 +55,7 @@ jobs:
         working-directory: backend
         run: npm test
 
-      -name: Coverage Test
+      - name: Coverage Test
         working-directory: backend
         run: npm run test -- --coverage 
 
@@ -85,7 +85,7 @@ jobs:
       - name: 🧪 Run frontend tests (Karma + Jasmine)
         run: npm test -- --watch=false --browsers=ChromeHeadless
 
-      -name: Coverage Test
+      - name: Coverage Test
         run: npm run test -- --watch=false --browsers=ChromeHeadless --coverage
 
       - name: 🏗️ Build frontend
