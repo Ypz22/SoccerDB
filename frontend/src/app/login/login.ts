@@ -32,7 +32,7 @@ export class LoginComponent {
       this.soccerService.login({ email: this.authData.email, password: this.authData.password })
         .subscribe({
           next: () => this.router.navigate(['/home']),
-          error: (err) => this.errorMessage = 'Credenciales inválidas'
+          error: () => this.errorMessage = 'Credenciales inválidas'
         });
     } else {
       this.soccerService.register(this.authData)
@@ -41,7 +41,7 @@ export class LoginComponent {
             this.isLoginMode = true;
             this.errorMessage = 'Registro exitoso. Por favor inicia sesión.';
           },
-          error: (err) => this.errorMessage = 'Error al registrar usuario'
+          error: () => this.errorMessage = 'Error al registrar usuario'
         });
     }
   }

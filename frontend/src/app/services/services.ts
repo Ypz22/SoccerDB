@@ -6,7 +6,7 @@ import { Observable, tap } from 'rxjs'; // Se agregó tap aquí
   providedIn: 'root'
 })
 export class SoccerService {
-  private apiUrl = 'https://backendsoccerdb.onrender.com/api';
+  private apiUrl = 'h ';
 
   constructor(private http: HttpClient) { }
 
