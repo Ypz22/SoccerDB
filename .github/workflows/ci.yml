@@ -85,8 +85,9 @@ jobs:
       - name: 🧪 Run frontend tests (Karma + Jasmine)
         run: npm test -- --watch=false --browsers=ChromeHeadless
 
-      - name: Coverage Test
-        run: ng test --code-coverage --watch=false
+      - name: 🧪 Run frontend tests (coverage)
+        run: npm run test -- --watch=false --browsers=ChromeHeadless --coverage
+
 
       - name: 🏗️ Build frontend
         run: npm run build
