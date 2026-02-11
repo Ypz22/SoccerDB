@@ -41,7 +41,7 @@ export class LoginComponent {
             this.isLoginMode = true;
             this.errorMessage = 'Registro exitoso. Por favor inicia sesión.';
           },
-          error: (err) => this.errorMessage = 'Error al registrar usuario'
+          error: () => this.errorMessage = 'Error al registrar usuario'
         });
     }
   }
