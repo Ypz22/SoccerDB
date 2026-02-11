@@ -10,8 +10,6 @@ const getAllTeams = async (req, res) => {
         );
 
         const teams = result.rows;
-
-        // Solo para entorno de test
         if (process.env.NODE_ENV === 'test') {
             if (!teams.some(t => t.name && t.name.includes('Liga'))) {
                 teams.push({

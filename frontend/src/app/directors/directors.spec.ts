@@ -1,4 +1,5 @@
-import { TestBed } from '@angular/core/testing';
+// directors.component.spec.ts
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { DirectorsComponent } from './directors';
 import { SoccerService } from '../services/services';
 import { of } from 'rxjs';
@@ -24,87 +25,171 @@ class SoccerServiceMock {
 }
 
 describe('DirectorsComponent', () => {
+  let fixture: ComponentFixture<DirectorsComponent>;
+  let component: DirectorsComponent;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DirectorsComponent, CommonModule, FormsModule],
       providers: [{ provide: SoccerService, useClass: SoccerServiceMock }]
     }).compileComponents();
+
+    fixture = TestBed.createComponent(DirectorsComponent);
+    component = fixture.componentInstance;
   });
 
   it('should create the component', () => {
-    const fixture = TestBed.createComponent(DirectorsComponent);
-    const component = fixture.componentInstance;
     expect(component).toBeTruthy();
   });
 
   it('should render main title', () => {
-    const fixture = TestBed.createComponent(DirectorsComponent);
     fixture.detectChanges();
     const h1 = fixture.nativeElement.querySelector('h1');
     expect(h1.textContent).toContain('Gestión de Directores Técnicos');
   });
 
   it('debe mostrar todos los inputs del formulario', () => {
-    const fixture = TestBed.createComponent(DirectorsComponent);
+    fixture.detectChanges();
     const inputs = fixture.nativeElement.querySelectorAll('input');
     expect(inputs.length).toBe(7);
   });
 
   it('debe mostrar el botón de agregar', () => {
-    const fixture = TestBed.createComponent(DirectorsComponent);
+    fixture.detectChanges();
     const btn = fixture.nativeElement.querySelector('button.btn-add');
     expect(btn).toBeTruthy();
   });
 
   it('debe cargar y mostrar la lista inicial de directores', () => {
-    const fixture = TestBed.createComponent(DirectorsComponent);
     fixture.detectChanges();
     const rows = fixture.nativeElement.querySelectorAll('tbody tr');
     expect(rows.length).toBe(2);
   });
 
   it('debe mostrar los encabezados correctos de la tabla', () => {
-    const fixture = TestBed.createComponent(DirectorsComponent);
     fixture.detectChanges();
     const headers = fixture.debugElement.queryAll(By.css('table th'));
     const texts = headers.map(h => h.nativeElement.textContent.trim());
-    expect(texts).toEqual([
-      'ID',
-      'Nombre',
-      'Nacionalidad',
-      'Equipo Actual',
-      'Email',
-      'Acciones'
-    ]);
+    expect(texts).toEqual(['ID', 'Nombre', 'Nacionalidad', 'Equipo Actual', 'Email', 'Acciones']);
   });
 
-  it('debe actualizar el modelo newDirector.name', () => {
-    const fixture = TestBed.createComponent(DirectorsComponent);
-    const component = fixture.componentInstance;
+  it('ngOnInit debe llamar loadDirectors()', () => {
+    spyOn(component, 'loadDirectors');
+    component.ngOnInit();
+    expect(component.loadDirectors).toHaveBeenCalled();
+  });
 
-    component.newDirector.name = 'Nuevo DT';
-    fixture.detectChanges();
+  it('loadDirectors debe ordenar por id', () => {
+    component.loadDirectors();
+    expect(component.directors.map(d => d.id)).toEqual([1, 2]);
+  });
 
-    expect(component.newDirector.name).toBe('Nuevo DT');
+  it('saveDirector debe llamar servicio y resetear formulario', () => {
+    const service = TestBed.inject(SoccerService);
+    spyOn(service, 'addDirector').and.callThrough();
+    spyOn(component, 'loadDirectors').and.callThrough();
+    spyOn(component, 'resetForm').and.callThrough();
+
+    component.saveDirector();
+
+    expect(service.addDirector).toHaveBeenCalled();
+    expect(component.loadDirectors).toHaveBeenCalled();
+    expect(component.resetForm).toHaveBeenCalled();
+  });
+
+  it('deleteDirector debe llamar servicio si confirm = true', () => {
+    const service = TestBed.inject(SoccerService);
+    spyOn(service, 'deleteDirector').and.callThrough();
+    spyOn(component, 'loadDirectors').and.callThrough();
+    spyOn(window, 'confirm').and.returnValue(true);
+
+    component.deleteDirector(1);
+
+    expect(service.deleteDirector).toHaveBeenCalledWith(1);
+    expect(component.loadDirectors).toHaveBeenCalled();
+  });
+
+  it('deleteDirector NO debe llamar servicio si confirm = false', () => {
+    const service = TestBed.inject(SoccerService);
+    spyOn(service, 'deleteDirector').and.callThrough();
+    spyOn(window, 'confirm').and.returnValue(false);
+
+    component.deleteDirector(1);
+
+    expect(service.deleteDirector).not.toHaveBeenCalled();
+  });
+
+  it('resetForm debe limpiar el formulario', () => {
+    component.newDirector.name = 'DT';
+    component.resetForm();
+    expect(component.newDirector.name).toBe('');
+  });
+
+  // =========================================================
+  // ✅ PRUEBAS AÑADIDAS (load/save/reset) — integradas
+  // =========================================================
+
+  it('loadDirectors debe llamar getDirectors y ordenar por id ascendente', () => {
+    const service = TestBed.inject(SoccerService);
+
+    spyOn(service, 'getDirectors').and.returnValue(
+      of([{ id: 3 }, { id: 1 }, { id: 2 }] as any[])
+    );
+
+    component.loadDirectors();
+
+    expect(service.getDirectors).toHaveBeenCalledTimes(1);
+    expect(component.directors.map(d => d.id)).toEqual([1, 2, 3]);
+  });
+
+  it('saveDirector debe llamar addDirector(newDirector) y luego loadDirectors + resetForm', () => {
+    const service = TestBed.inject(SoccerService);
+
+    spyOn(service, 'addDirector').and.returnValue(of({}));
+    spyOn(component, 'loadDirectors'); // no callThrough, solo verificar que se llama
+    spyOn(component, 'resetForm');     // no callThrough para evitar mutar newDirector
+
+    component.newDirector = {
+      name: 'DT',
+      nationality: 'EC',
+      age: null,
+      currentTeam: 'Equipo',
+      yearsExperience: null,
+      email: 'dt@mail.com',
+      cellphone: '0991234567',
+    };
+
+    component.saveDirector();
+
+    expect(service.addDirector).toHaveBeenCalledTimes(1);
+    expect(service.addDirector).toHaveBeenCalledWith(component.newDirector);
+
+    expect(component.loadDirectors).toHaveBeenCalledTimes(1);
+    expect(component.resetForm).toHaveBeenCalledTimes(1);
   });
 
 
-  it('debe llamar a saveDirector al enviar el formulario', () => {
-    const fixture = TestBed.createComponent(DirectorsComponent);
-    const component = fixture.componentInstance;
-    spyOn(component, 'saveDirector');
-    fixture.detectChanges();
-    const form = fixture.nativeElement.querySelector('form');
-    form.dispatchEvent(new Event('submit'));
-    expect(component.saveDirector).toHaveBeenCalled();
-  });
+  it('resetForm debe reiniciar newDirector a valores vacíos', () => {
+    component.newDirector = {
+      name: 'X',
+      nationality: 'Y',
+      age: null,
+      currentTeam: 'Z',
+      yearsExperience: null,
+      email: 'x@mail.com',
+      cellphone: '099',
+    };
 
-  it('debe mostrar el icono de eliminar por cada director', () => {
-    const fixture = TestBed.createComponent(DirectorsComponent);
-    fixture.detectChanges();
-    const icons = fixture.nativeElement.querySelectorAll('.fa-trash');
-    expect(icons.length).toBe(2);
-  });
+    component.resetForm();
 
+    expect(component.newDirector).toEqual({
+      name: '',
+      nationality: '',
+      age: null,
+      currentTeam: '',
+      yearsExperience: null,
+      email: '',
+      cellphone: '',
+    });
+  });
 });

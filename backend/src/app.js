@@ -14,7 +14,8 @@ ConnectDB.connect();
 const app = express();
 
 app.use(cors({
-    origin: 'http://localhost:4200'
+    origin: ['http://localhost:4200', "https://soccerdb-d10e7.web.app/", "https://soccerdb-d10e7.firebaseapp.com/"],
+    credentials: true
 }));
 
 app.use(express.json());

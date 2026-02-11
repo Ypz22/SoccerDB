@@ -27,6 +27,7 @@ afterAll(async () => {
     if (db.end) await db.end();
 });
 
+
 test('GET /api/teams - debe devolver equipos ecuatorianos', async () => {
     const response = await request(app).get('/api/teams');
 
@@ -77,6 +78,12 @@ test('GET /api/teams/:id - debe responder 500 si ocurre un error en la BD', asyn
     expect(response.body).toEqual({ error: 'Error fetching team' });
     expect(logger.error).toHaveBeenCalled();
     db.query.mockRestore();
+});
+
+test('GET /api/teams/:id - si no existe el id debe devolver error', async () => {
+    const response = await request(app).get('/api/teams/' + NaN);
+
+    expect(response.statusCode).toBe(400);
 });
 
 test('POST /api/teams - debe crear un equipo ecuatoriano', async () => {
@@ -180,6 +187,19 @@ test('PUT /api/teams/:id - error por id no existente', async () => {
     expect(response.statusCode).toBe(404);
 });
 
+test('PUT /api/teams/:id - si el id no existe debe devolver error', async () => {
+    const response = await request(app)
+        .put('/api/teams/' + NaN)
+        .send({
+            name: "Equipo Falso",
+            city: "Ninguna",
+            stadium: "Ninguno",
+            year_foundation: 2000
+        });
+
+    expect(response.statusCode).toBe(400);
+});
+
 test('DELETE /api/teams/:id - debe borrar un equipo ecuatoriano', async () => {
     const response = await request(app)
         .delete(`/api/teams/${createdId}`);
@@ -208,4 +228,11 @@ test('DELETE /api/teams/:id - error al eliminar inexistente', async () => {
     const response = await request(app).delete('/api/teams/999999');
 
     expect(response.statusCode).toBe(404);
+});
+
+test('DELETE /api/teams/:id - si el id no existe debe devolver error', async () => {
+    const response = await request(app)
+        .delete(`/api/teams/${NaN}`);
+
+    expect(response.statusCode).toBe(400);
 });

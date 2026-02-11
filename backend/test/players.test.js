@@ -59,6 +59,12 @@ test('GET /api/players/:id - debe devolver jugador especifico', async () => {
     expect(response.body).toHaveProperty('id', createdId);
 });
 
+test('GET /api/players/:id - si no existe Id debe devolver error', async () => {
+    const response = await request(app).get(`/api/players/${NaN}`);
+
+    expect(response.statusCode).toBe(400);
+});
+
 test('GET /api/players/:id - 404 no existe', async () => {
     const response = await request(app).get('/api/players/999999');
 
@@ -145,6 +151,23 @@ test('PUT /api/players/:id - debe actualizar jugador', async () => {
     expect(response.statusCode).toBe(200);
 });
 
+test('PUT /api/players/:id - si no existe id debe devolver error', async () => {
+    const cambios = {
+        nombre: "Actualizado",
+        apellido: "Update",
+        edad: 23,
+        altura: 1.78,
+        pierna_buena: "Derecha",
+        club: "Emelec"
+    };
+
+    const response = await request(app)
+        .put(`/api/players/${NaN}`)
+        .send(cambios);
+
+    expect(response.statusCode).toBe(400);
+});
+
 test('PUT /api/players/:id - 404 si no existe', async () => {
     const response = await request(app)
         .put('/api/players/999999')
@@ -188,6 +211,13 @@ test('DELETE /api/players/:id - borrar jugador', async () => {
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty('message');
+});
+
+test('DELETE /api/players/:id - si no existe id debe devolver error', async () => {
+    const response = await request(app)
+        .delete(`/api/players/${NaN}`);
+
+    expect(response.statusCode).toBe(400);
 });
 
 test('DELETE /api/players/:id - 404 si no existe', async () => {

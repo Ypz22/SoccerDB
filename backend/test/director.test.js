@@ -105,10 +105,20 @@ test('POST /api/directors  - error por datos incompletos', async () => {
     const directorInvalido = { name: "" };
 
     const response = await request(app)
-        .post('/api/directors')
+        .post('/api/directors/')
         .send(directorInvalido);
 
     expect(response.statusCode).toBe(500);
+});
+
+test('POST /api/directors  - error por campos vacíos', async () => {
+    const directorInvalido = { name: "" };
+
+    const response = await request(app)
+        .put('/api/directors/' + createdId)
+        .send(directorInvalido);
+
+    expect(response.statusCode).toBe(400);
 });
 
 test('POST /api/directors - debe responder 500 si ocurre un error en la BD', async () => {
